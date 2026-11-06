@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="file_manager.FileManager">
+        <div class="o_action">
+        <div class="o_file_manager" tabindex="-1" t-on-keydown="(ev) => this.onKeydown(ev)">
+            <input type="file" multiple="multiple" class="d-none o_file_manager_file_input" t-ref="this.fileInputRef"
+                aria-label="Choose files" t-on-change="(ev) => this.onFilesPicked(ev)"/>
+            <input type="file" multiple="multiple" webkitdirectory="webkitdirectory" class="d-none o_file_manager_folder_input"
+                t-ref="this.folderInputRef" aria-label="Choose a folder" t-on-change="(ev) => this.onFolderPicked(ev)"/>
+            <input type="file" class="d-none o_file_manager_version_input" t-ref="this.versionInputRef"
+                aria-label="Choose a new version" t-on-change="(ev) => this.onVersionPicked(ev)"/>
+
+            <div t-if="this.state.sidebarOpen" class="o_file_manager_backdrop"
+                t-on-click="() => this.state.sidebarOpen = false"/>
+
+            <nav class="o_file_manager_sidebar" t-att-class="{ o_file_manager_sidebar_open: this.state.sidebarOpen }" aria-label="Folders">
+                <button t-foreach="this.sections" t-as="section" t-key="section.id" type="button"
+                    class="o_file_manager_section btn btn-link"
+                    t-att-class="{ active: this.state.section === section.id }"
+                    t-att-data-section="section.id"
+                    t-on-click="() => this.openSection(section.id)">
+                    <i class="oi" t-att-data-icon="section.icon"/>
+                    <span t-out="section.label"/>
+                </button>
+
+                <h6 class="o_file_manager_sidebar_title">Folders</h6>
+                <div class="o_file_manager_tree">
+                    <t t-foreach="this.childrenOf(false)" t-as="folder" t-key="folder.id">
+                        <FolderTreeNode folder="folder" depth="0"
+                            childrenOf="this.childrenOf" isExpanded="this.isExpanded"
+                            isActive="this.isActiveFolder" isDropTarget="this.isDropTarget"
+                            onOpen="this.onTreeOpen" onToggle="this.onTreeToggle"
+                            onDragOver="this.onFolderDragOver" onDragLeave="this.onFolderDragLeave"
+                            onDrop="this.onFolderDrop"/>
+                    </t>
+                    <p t-if="!this.state.tree.length" class="text-muted small px-2">No folders yet.</p>
+                </div>
+
+                <t t-if="this.state.tags.length">
+                    <h6 class="o_file_manager_sidebar_title">Tags</h6>
+                    <div class="o_file_manager_tag_filter">
+                        <button t-foreach="this.state.tags" t-as="tag" t-key="tag.id" type="button"
+                            class="o_tag badge rounded-pill o_badge border-0"
+                            t-attf-class="o_tag_color_{{ tag.color }}"
+                            t-att-class="{ o_file_manager_tag_active: this.state.activeTagIds.includes(tag.id) }"
+                            t-att-aria-pressed="this.state.activeTagIds.includes(tag.id)"
+                            t-on-click="() => this.toggleTagFilter(tag)"
+                            t-out="tag.name"/>
+                    </div>
+                </t>
+            </nav>
+
+            <main class="o_file_manager_main"
+                t-on-click="() => this.clearSelection()"
+                t-on-dragenter="(ev) => this.onMainDragEnter(ev)"
+                t-on-dragleave="(ev) => this.onMainDragLeave(ev)"
+                t-on-dragover="(ev) => this.onMainDragOver(ev)"
+                t-on-drop="(ev) => this.onMainDrop(ev)">
+
+                <header class="o_file_manager_header" t-on-click.stop="() => this.noop()">
+                    <button type="button" class="btn btn-secondary o_file_manager_menu_button" aria-label="Show folders"
+                        t-on-click="() => this.state.sidebarOpen = true"><i class="oi" data-icon="menu"/></button>
+
+                    <Dropdown t-if="this.canAddHere()" menuClass="'o_file_manager_new_menu'">
+                        <button type="button" class="btn btn-primary o_file_manager_new">
+                            <i class="oi me-1" data-icon="add"/>New
+                        </button>
+                        <t t-set-slot="content">
+                            <DropdownItem onSelected="() => this.pickFiles()"><i class="oi me-2" data-icon="upload"/>Upload files</DropdownItem>
+                            <DropdownItem onSelected="() => this.pickFolder()"><i class="oi me-2" data-icon="cloud_upload"/>Upload a folder</DropdownItem>
+                            <DropdownItem onSelected="() => this.newFolder()"><i class="oi me-2" data-icon="folder"/>New folder</DropdownItem>
+                            <DropdownItem onSelected="() => this.newLink()"><i class="oi me-2" data-icon="link"/>Add a link</DropdownItem>
+                        </t>
+                    </Dropdown>
+
+                    <div class="o_file_manager_breadcrumbs" aria-label="Current location">
+                        <t t-if="this.state.section === 'folder'">
+                            <t t-foreach="this.state.breadcrumbs" t-as="crumb" t-key="crumb.id">
+                                <button t-if="!crumb_last" type="button" class="btn btn-link p-0 text-truncate"
+                                    t-on-click="() => this.openFolder(crumb)" t-out="crumb.name"/>
+                                <strong t-else="" class="text-truncate" t-out="crumb.name"/>
+                                <i t-if="!crumb_last" class="oi text-muted" data-icon="chevron_right"/>
+                            </t>
+                        </t>
+                        <strong t-else="" t-out="this.title()"/>
+                    </div>
+
+                    <div class="o_file_manager_search">
+                        <i class="oi text-muted" data-icon="search"/>
+                        <input type="search" class="form-control form-control-sm" placeholder="Search files and tags"
+                            aria-label="Search files and tags" t-model.proxy="this.state.search"
+                            t-on-input="() => this.onSearchInput()"/>
+                    </div>
+
+                    <div class="o_file_manager_view_controls">
+                        <Dropdown>
+                            <button type="button" class="btn btn-secondary o_file_manager_sort">Sort</button>
+                            <t t-set-slot="content">
+                                <DropdownItem t-foreach="this.sortOptions" t-as="option" t-key="option.id"
+                                    class="this.state.sort === option.id ? 'fw-bold' : ''"
+                                    onSelected="() => this.setSort(option.id)">
+                                    <t t-out="option.label"/>
+                                </DropdownItem>
+                            </t>
+                        </Dropdown>
+                        <div class="btn-group" role="group" aria-label="View mode">
+                            <button type="button" class="btn btn-secondary o_file_manager_grid_mode" title="Grid" aria-label="Grid"
+                                t-att-class="{ active: this.state.viewMode === 'grid' }"
+                                t-on-click="() => this.setViewMode('grid')"><i class="oi" data-icon="grid_view"/></button>
+                            <button type="button" class="btn btn-secondary o_file_manager_list_mode" title="List" aria-label="List"
+                                t-att-class="{ active: this.state.viewMode === 'list' }"
+                                t-on-click="() => this.setViewMode('list')"><i class="oi" data-icon="view_list"/></button>
+                        </div>
+                        <button type="button" class="btn btn-secondary o_file_manager_details_toggle" title="Details" aria-label="Details"
+                            t-att-class="{ active: this.state.detailsOpen }"
+                            t-on-click="() => this.state.detailsOpen = !this.state.detailsOpen"><i class="oi" data-icon="info"/></button>
+                    </div>
+                </header>
+
+                <t t-set="selection" t-value="this.selectedItems()"/>
+                <div t-if="selection.length" class="o_file_manager_actionbar" t-on-click.stop="() => this.noop()">
+                    <button type="button" class="btn btn-link btn-sm" aria-label="Clear selection" title="Clear selection"
+                        t-on-click="() => this.clearSelection()"><i class="oi" data-icon="close"/></button>
+                    <span class="me-2 text-nowrap"><t t-out="selection.length"/> selected</span>
+                    <button t-foreach="this.toolbarActions()" t-as="action" t-key="action.id" type="button"
+                        class="btn btn-sm btn-secondary"
+                        t-att-class="action.danger ? 'text-danger' : ''"
+                        t-att-data-action="action.id"
+                        t-on-click="() => action.run()">
+                        <i class="oi me-1" t-att-data-icon="action.icon"/><span class="o_file_manager_action_label" t-out="action.label"/>
+                    </button>
+                    <Dropdown t-if="this.moreActions().length">
+                        <button type="button" class="btn btn-sm btn-secondary o_file_manager_more" aria-label="More actions" title="More actions">
+                            <i class="oi" data-icon="more_vert"/>
+                        </button>
+                        <t t-set-slot="content">
+                            <DropdownItem t-foreach="this.moreActions()" t-as="action" t-key="action.id"
+                                attrs="{ 'data-action': action.id }"
+                                onSelected="() => action.run()">
+                                <i class="oi me-2" t-att-data-icon="action.icon"/><t t-out="action.label"/>
+                            </DropdownItem>
+                        </t>
+                    </Dropdown>
+                </div>
+
+                <div class="o_file_manager_content">
+                    <div t-if="this.isTrash() and (this.state.documents.length or this.state.folders.length)" class="alert alert-info py-2 small">
+                        Items in the trash are deleted for good after 30 days.
+                    </div>
+
+                    <div t-if="!this.state.loading and !this.state.documents.length and !this.state.folders.length" class="o_file_manager_empty">
+                        <t t-if="this.state.search or this.state.activeTagIds.length">
+                            <i class="oi" data-icon="search"/>
+                            <h4>Nothing found</h4>
+                            <p>Try another word or remove the tag filters.</p>
+                        </t>
+                        <t t-elif="this.isTrash()">
+                            <i class="oi" data-icon="delete"/>
+                            <h4>The trash is empty</h4>
+                        </t>
+                        <t t-elif="this.state.section === 'favorites'">
+                            <i class="oi" data-icon="star"/>
+                            <h4>No favorites yet</h4>
+                            <p>Select a file and add it to your favorites to find it here.</p>
+                        </t>
+                        <t t-elif="this.state.section === 'shared'">
+                            <i class="oi" data-icon="share"/>
+                            <h4>Nothing shared yet</h4>
+                            <p>Files you share with a link appear here.</p>
+                        </t>
+                        <t t-elif="this.canAddHere()">
+                            <i class="oi" data-icon="cloud_upload"/>
+                            <h4>Drop files here</h4>
+                            <p>Or use the button to choose them from your computer.</p>
+                            <button type="button" class="btn btn-primary" t-on-click.stop="() => this.pickFiles()">Upload files</button>
+                        </t>
+                        <t t-else="">
+                            <i class="oi" data-icon="folder"/>
+                            <h4>This folder is empty</h4>
+                        </t>
+                    </div>
+
+                    <div t-if="this.state.viewMode === 'grid'" class="o_file_manager_grid">
+                        <t t-foreach="this.allItems()" t-as="item" t-key="item.key">
+                            <div class="o_file_manager_card"
+                                t-att-class="{
+                                    o_file_manager_selected: this.isSelected(item),
+                                    o_file_manager_drop_target: item.kind === 'folder' and this.state.dropFolderId === item.id,
+                                }"
+                                t-att-data-key="item.key"
+                                draggable="true" tabindex="0" role="button" t-att-aria-label="item.name"
+                                t-att-aria-pressed="this.isSelected(item)"
+                                t-on-click="(ev) => this.onItemClick(ev, item)"
+                                t-on-dblclick="() => this.openItem(item)"
+                                t-on-contextmenu="(ev) => this.onItemContextMenu(ev, item)"
+                                t-on-dragstart="(ev) => this.onItemDragStart(ev, item)"
+                                t-on-dragover="(ev) => this.onFolderCardDragOver(ev, item)"
+                                t-on-dragleave="(ev) => this.onFolderCardDragLeave(ev, item)"
+                                t-on-drop="(ev) => this.onFolderCardDrop(ev, item)">
+                                <input type="checkbox" class="form-check-input o_file_manager_check"
+                                    t-att-checked="this.isSelected(item)" t-att-aria-label="'Select ' + item.name"
+                                    t-on-click="(ev) => this.onCheckboxClick(ev, item)"/>
+                                <div class="o_file_manager_badges">
+                                    <i t-if="item.is_favorite" class="oi oi-sm text-warning" data-icon="star_f" title="Favorite" aria-label="Favorite"/>
+                                    <i t-if="item.locked_by" class="oi oi-sm" data-icon="lock" t-att-title="'Locked by ' + item.locked_by" aria-label="Locked"/>
+                                    <i t-if="item.is_shared" class="oi oi-sm" data-icon="link" title="Has a share link" aria-label="Has a share link"/>
+                                </div>
+                                <div class="o_file_manager_thumb">
+                                    <t t-if="item.kind === 'folder'">
+                                        <i class="oi o_file_manager_folder_icon" data-icon="folder_f"/>
+                                    </t>
+                                    <img t-elif="this.thumbnailUrl(item)" t-att-src="this.thumbnailUrl(item)" alt="" loading="lazy" draggable="false"/>
+                                    <i t-elif="item.doc_type === 'url'" class="oi o_file_manager_link_icon" data-icon="link"/>
+                                    <span t-else="" class="o_image o_file_manager_mimetype" role="img" t-att-data-mimetype="item.mimetype"/>
+                                </div>
+                                <div class="o_file_manager_card_name" t-att-title="item.name" t-out="item.name"/>
+                                <div class="o_file_manager_card_meta">
+                                    <t t-if="item.kind === 'folder'"><t t-out="item.document_count"/> <t t-out="item.document_count === 1 ? 'file' : 'files'"/></t>
+                                    <t t-else=""><t t-out="this.formatSize(item.file_size)"/><t t-if="item.file_size"> · </t><t t-out="this.formatDate(item.write_date)"/></t>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <table t-elif="this.allItems().length" class="table table-hover o_file_manager_table">
+                        <thead>
+                            <tr>
+                                <th class="o_file_manager_col_check"><span class="visually-hidden">Selected</span></th>
+                                <th>Name</th>
+                                <th class="o_file_manager_col_optional">Tags</th>
+                                <th class="o_file_manager_col_optional">Owner</th>
+                                <th class="o_file_manager_col_optional text-end">Size</th>
+                                <th class="text-end">Modified</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="this.allItems()" t-as="item" t-key="item.key"
+                                class="o_file_manager_row"
+                                t-att-class="{
+                                    o_file_manager_selected: this.isSelected(item),
+                                    o_file_manager_drop_target: item.kind === 'folder' and this.state.dropFolderId === item.id,
+                                }"
+                                t-att-data-key="item.key"
+                                draggable="true"
+                                t-on-click="(ev) => this.onItemClick(ev, item)"
+                                t-on-dblclick="() => this.openItem(item)"
+                                t-on-contextmenu="(ev) => this.onItemContextMenu(ev, item)"
+                                t-on-dragstart="(ev) => this.onItemDragStart(ev, item)"
+                                t-on-dragover="(ev) => this.onFolderCardDragOver(ev, item)"
+                                t-on-dragleave="(ev) => this.onFolderCardDragLeave(ev, item)"
+                                t-on-drop="(ev) => this.onFolderCardDrop(ev, item)">
+                                <td class="o_file_manager_col_check">
+                                    <input type="checkbox" class="form-check-input" t-att-checked="this.isSelected(item)"
+                                        t-att-aria-label="'Select ' + item.name"
+                                        t-on-click="(ev) => this.onCheckboxClick(ev, item)"/>
+                                </td>
+                                <td class="o_file_manager_col_name">
+                                    <i t-if="item.kind === 'folder'" class="oi o_file_manager_folder_icon" data-icon="folder_f"/>
+                                    <i t-elif="item.doc_type === 'url'" class="oi" data-icon="link"/>
+                                    <span t-else="" class="o_image o_file_manager_mimetype_small" role="img" t-att-data-mimetype="item.mimetype"/>
+                                    <span class="text-truncate" t-out="item.name"/>
+                                    <i t-if="item.is_favorite" class="oi oi-sm text-warning" data-icon="star_f" aria-label="Favorite"/>
+                                    <i t-if="item.locked_by" class="oi oi-sm" data-icon="lock" aria-label="Locked"/>
+                                    <i t-if="item.is_shared" class="oi oi-sm" data-icon="link" aria-label="Has a share link"/>
+                                </td>
+                                <td class="o_file_manager_col_optional">
+                                    <t t-if="item.tags">
+                                        <span t-foreach="item.tags" t-as="tag" t-key="tag.id" class="o_tag badge rounded-pill o_badge me-1"
+                                            t-attf-class="o_tag_color_{{ tag.color }}" t-out="tag.name"/>
+                                    </t>
+                                </td>
+                                <td class="o_file_manager_col_optional" t-out="item.owner"/>
+                                <td class="o_file_manager_col_optional text-end text-nowrap" t-out="this.formatSize(item.file_size)"/>
+                                <td class="text-end text-nowrap" t-out="this.formatDate(item.write_date)"/>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div t-if="this.state.documents.length &lt; this.state.total" class="text-center my-3">
+                        <button type="button" class="btn btn-secondary o_file_manager_load_more"
+                            t-on-click.stop="() => this.loadItems({ append: true })">
+                            Show more (<t t-out="this.state.total - this.state.documents.length"/> left)
+                        </button>
+                    </div>
+                </div>
+
+                <div t-if="this.state.fileDragActive" class="o_file_manager_drop_overlay">
+                    <div>
+                        <i class="oi" data-icon="cloud_upload"/>
+                        <p>Drop to upload to <strong t-out="this.uploadTargetLabel()"/></p>
+                    </div>
+                </div>
+
+                <div t-if="this.state.uploads.length" class="o_file_manager_uploads" aria-live="polite" t-on-click.stop="() => this.noop()">
+                    <div t-foreach="this.state.uploads" t-as="upload" t-key="upload.id" class="o_file_manager_upload">
+                        <div class="d-flex justify-content-between gap-2">
+                            <span class="text-truncate small" t-out="upload.name"/>
+                            <button t-if="upload.error" type="button" class="btn btn-link btn-sm p-0" aria-label="Dismiss"
+                                t-on-click="() => this.dismissUpload(upload)"><i class="oi oi-sm" data-icon="close"/></button>
+                        </div>
+                        <small t-if="upload.error" class="text-danger" t-out="upload.error"/>
+                        <div t-else="" class="progress" role="progressbar" aria-label="Upload progress" t-att-aria-valuenow="Math.round(upload.progress * 100)">
+                            <div class="progress-bar" t-att-style="'width: ' + upload.progress * 100 + '%'"/>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <DetailsPanel t-if="this.state.detailsOpen"
+                selection="selection"
+                allTags="this.state.tags"
+                thumbnailUrl="this.thumbnailUrl"
+                onClose="this.onDetailsClose"
+                onChanged="this.onDetailsChanged"
+                onTagsChanged="this.onTagsChanged"
+                onUploadVersion="this.onUploadVersion"
+                onPreview="this.previewDocument"/>
+
+            <div t-if="this.state.contextMenu" class="o_file_manager_context_menu dropdown-menu show" role="menu"
+                t-att-style="'left: ' + this.state.contextMenu.x + 'px; top: ' + this.state.contextMenu.y + 'px'"
+                t-on-click.stop="() => this.noop()">
+                <button t-foreach="this.availableActions()" t-as="action" t-key="action.id" type="button"
+                    class="dropdown-item" role="menuitem"
+                    t-att-class="action.danger ? 'text-danger' : ''"
+                    t-att-data-action="action.id"
+                    t-on-click="() => this.runMenuAction(action)">
+                    <i class="oi me-2" t-att-data-icon="action.icon"/><t t-out="action.label"/>
+                </button>
+            </div>
+        </div>
+        </div>
+    </t>
+
+</templates>

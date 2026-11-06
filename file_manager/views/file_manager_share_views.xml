@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_file_manager_share_form" model="ir.ui.view">
+        <field name="name">file.manager.share.form</field>
+        <field name="model">file.manager.share</field>
+        <field name="arch" type="xml">
+            <form string="Share Link">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="url" widget="CopyClipboardChar" readonly="1"/>
+                            <field name="expiration_date"/>
+                            <field name="is_expired" invisible="not is_expired"/>
+                        </group>
+                        <group>
+                            <field name="view_count"/>
+                            <field name="create_uid"/>
+                            <field name="create_date" string="Created On"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="folder_id" invisible="not folder_id" readonly="1"/>
+                        <field name="document_ids" widget="many2many_tags" readonly="1" invisible="not document_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_file_manager_share_list" model="ir.ui.view">
+        <field name="name">file.manager.share.list</field>
+        <field name="model">file.manager.share</field>
+        <field name="arch" type="xml">
+            <list string="Share Links" create="false">
+                <field name="name"/>
+                <field name="url" widget="CopyClipboardChar"/>
+                <field name="expiration_date"/>
+                <field name="is_expired" optional="hide"/>
+                <field name="view_count"/>
+                <field name="create_uid" widget="many2one_avatar_user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_file_manager_share" model="ir.actions.act_window">
+        <field name="name">Share Links</field>
+        <field name="res_model">file.manager.share</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'create': False}</field>
+    </record>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="file_manager.FolderTreeNode">
+        <t t-set="children" t-value="this.props.childrenOf(this.props.folder.id)"/>
+        <t t-set="expanded" t-value="this.props.isExpanded(this.props.folder.id)"/>
+        <div class="o_file_manager_tree_row"
+            t-att-class="{
+                active: this.props.isActive(this.props.folder.id),
+                o_file_manager_drop_target: this.props.isDropTarget(this.props.folder.id),
+            }"
+            t-att-style="'padding-left: ' + (this.props.depth * 14 + 4) + 'px'"
+            t-att-data-folder-id="this.props.folder.id"
+            t-on-dragover="(ev) => this.props.onDragOver(ev, this.props.folder)"
+            t-on-dragleave="(ev) => this.props.onDragLeave(ev, this.props.folder)"
+            t-on-drop="(ev) => this.props.onDrop(ev, this.props.folder)">
+            <button t-if="children.length" type="button" class="o_file_manager_tree_toggle btn btn-link"
+                t-att-aria-expanded="expanded" aria-label="Show or hide subfolders"
+                t-on-click.stop="() => this.props.onToggle(this.props.folder.id)">
+                <i class="oi" t-att-data-icon="expanded ? 'expand_more' : 'chevron_right'"/>
+            </button>
+            <span t-else="" class="o_file_manager_tree_spacer"/>
+            <button type="button" class="o_file_manager_tree_label btn btn-link"
+                t-on-click="() => this.props.onOpen(this.props.folder)">
+                <i class="oi" t-att-data-icon="this.props.isActive(this.props.folder.id) ? 'folder_open' : 'folder'"/>
+                <span class="text-truncate" t-out="this.props.folder.name"/>
+                <i t-if="this.props.folder.access_mode === 'restricted'" class="oi oi-sm text-muted ms-auto"
+                    data-icon="lock" title="Selected people only" aria-label="Selected people only"/>
+            </button>
+        </div>
+        <t t-if="expanded">
+            <t t-foreach="children" t-as="child" t-key="child.id">
+                <FolderTreeNode folder="child" depth="this.props.depth + 1"
+                    childrenOf="this.props.childrenOf" isExpanded="this.props.isExpanded"
+                    isActive="this.props.isActive" isDropTarget="this.props.isDropTarget"
+                    onOpen="this.props.onOpen" onToggle="this.props.onToggle"
+                    onDragOver="this.props.onDragOver" onDragLeave="this.props.onDragLeave"
+                    onDrop="this.props.onDrop"/>
+            </t>
+        </t>
+    </t>
+</templates>

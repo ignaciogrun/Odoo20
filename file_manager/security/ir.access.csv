@@ -1,0 +1,16 @@
+id,name,model_id,group_id/id,operation,domain
+access_folder_user_read,Folder: read if visible,file.manager.folder,base.group_user,r,"['|', '|', '|', ('effective_access_mode', 'in', ['edit', 'view']), ('effective_owner_id', '=', user.id), ('effective_editor_ids', 'in', [user.id]), ('effective_viewer_ids', 'in', [user.id])]"
+access_folder_user_write,Folder: change if editor,file.manager.folder,base.group_user,cud,"['|', '|', ('effective_access_mode', '=', 'edit'), ('effective_owner_id', '=', user.id), ('effective_editor_ids', 'in', [user.id])]"
+access_folder_admin,Folder: administrators,file.manager.folder,file_manager.group_file_manager_admin,crud,
+restrict_folder_company,Folder: allowed companies only,file.manager.folder,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+access_document_user_read,File: read if folder visible or own private file,file.manager.document,base.group_user,r,"['|', ('folder_id', 'access', 'read'), '&', ('folder_id', '=', False), ('owner_id', '=', user.id)]"
+access_document_user_write,File: change if folder editable or own private file,file.manager.document,base.group_user,cud,"['|', ('folder_id', 'access', 'write'), '&', ('folder_id', '=', False), ('owner_id', '=', user.id)]"
+access_document_admin,File: administrators,file.manager.document,file_manager.group_file_manager_admin,crud,
+restrict_document_company,File: allowed companies only,file.manager.document,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+access_version_user_read,Version: read if file visible,file.manager.document.version,base.group_user,r,"[('document_id', 'access', 'read')]"
+access_version_user_write,Version: change if file editable,file.manager.document.version,base.group_user,cud,"[('document_id', 'access', 'write')]"
+access_version_admin,Version: administrators,file.manager.document.version,file_manager.group_file_manager_admin,crud,
+access_tag_user,Tag: use and create,file.manager.tag,base.group_user,cru,
+access_tag_admin,Tag: administrators,file.manager.tag,file_manager.group_file_manager_admin,crud,
+access_share_user,Share link: own links only,file.manager.share,base.group_user,crud,"[('create_uid', '=', user.id)]"
+access_share_admin,Share link: administrators,file.manager.share,file_manager.group_file_manager_admin,crud,

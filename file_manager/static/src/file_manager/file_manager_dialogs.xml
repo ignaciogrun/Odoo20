@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="file_manager.TextPromptDialog">
+        <Dialog title="this.props.title" size="'md'">
+            <form t-on-submit="(ev) => this.confirm(ev)">
+                <label class="form-label fw-bold" for="fm_prompt_value" t-out="this.props.label"/>
+                <input id="fm_prompt_value" class="form-control" type="text" autofocus="autofocus"
+                    t-att-placeholder="this.props.placeholder" t-model.proxy="this.state.value"/>
+                <t t-if="this.props.secondLabel">
+                    <label class="form-label fw-bold mt-3" for="fm_prompt_second" t-out="this.props.secondLabel"/>
+                    <input id="fm_prompt_second" class="form-control" type="text"
+                        t-att-placeholder="this.props.secondPlaceholder" t-model.proxy="this.state.second"/>
+                </t>
+                <t t-if="this.props.choices">
+                    <div class="fw-bold mt-3 mb-1" t-out="this.props.choiceLabel"/>
+                    <div class="form-check" t-foreach="this.props.choices" t-as="choice" t-key="choice.id">
+                        <input class="form-check-input" type="radio" name="fm_prompt_choice"
+                            t-att-id="'fm_choice_' + choice.id" t-att-value="choice.id"
+                            t-model.proxy="this.state.choice"/>
+                        <label class="form-check-label" t-att-for="'fm_choice_' + choice.id" t-out="choice.label"/>
+                    </div>
+                </t>
+                <button type="submit" class="d-none" aria-hidden="true" tabindex="-1"/>
+            </form>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-att-disabled="!this.canConfirm()" t-on-click="() => this.confirm()"
+                    t-out="this.props.confirmLabel"/>
+                <button class="btn btn-secondary" t-on-click="() => this.props.close()">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="file_manager.MoveDialog">
+        <Dialog title.translate="Move to" size="'md'">
+            <div class="o_file_manager_move_list" role="listbox" aria-label="Destination folder">
+                <button t-if="this.props.allowRoot" type="button" role="option"
+                    class="o_file_manager_move_row btn"
+                    t-att-class="{ active: this.state.target === 'root' }"
+                    t-att-aria-selected="this.state.target === 'root'"
+                    t-on-click="() => this.state.target = 'root'">
+                    <i class="oi" data-icon="person"/>
+                    <span t-out="this.props.rootLabel"/>
+                </button>
+                <button t-foreach="this.rows" t-as="row" t-key="row.id" type="button" role="option"
+                    class="o_file_manager_move_row btn"
+                    t-att-class="{ active: this.state.target === row.id }"
+                    t-att-aria-selected="this.state.target === row.id"
+                    t-att-disabled="row.disabled"
+                    t-att-style="'padding-left: ' + (row.depth + 1) * 16 + 'px'"
+                    t-on-click="() => this.state.target = row.id">
+                    <i class="oi" data-icon="folder"/>
+                    <span class="text-truncate" t-out="row.name"/>
+                </button>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-att-disabled="this.state.target === false or this.state.busy"
+                    t-on-click="() => this.confirm()">Move here</button>
+                <button class="btn btn-secondary" t-on-click="() => this.props.close()">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="file_manager.ShareDialog">
+        <Dialog title.translate="Share with a link" size="'md'">
+            <p class="text-muted">Anyone with the link can see and download this, without logging in.</p>
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-sm-7">
+                    <label class="form-label fw-bold" for="fm_share_name">Title</label>
+                    <input id="fm_share_name" class="form-control" type="text" t-model.proxy="this.state.name"/>
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label fw-bold" for="fm_share_expiry">Expires on (optional)</label>
+                    <input id="fm_share_expiry" class="form-control" type="date" t-model.proxy="this.state.expiration"/>
+                </div>
+            </div>
+            <button class="btn btn-primary o_file_manager_create_link" t-att-disabled="this.state.busy"
+                t-on-click="() => this.createLink()">
+                <i class="oi me-1" data-icon="link"/>Create link
+            </button>
+            <t t-if="this.state.links.length">
+                <h6 class="mt-4">Existing links</h6>
+                <div class="o_file_manager_link" t-foreach="this.state.links" t-as="link" t-key="link.id">
+                    <div class="d-flex justify-content-between small">
+                        <strong class="text-truncate" t-out="link.name"/>
+                        <span class="text-muted flex-shrink-0 ms-2">
+                            <span t-if="link.is_expired" class="text-danger">Expired</span>
+                            <t t-elif="link.expiration_date">Until <t t-out="link.expiration_date"/></t>
+                            <t t-else="">No expiry</t>
+                            · <t t-out="link.view_count"/> views
+                        </span>
+                    </div>
+                    <div class="input-group input-group-sm mt-1">
+                        <input class="form-control o_file_manager_link_url" type="text" readonly="readonly"
+                            aria-label="Link" t-att-value="link.url"/>
+                        <button class="btn btn-secondary" title="Copy link" aria-label="Copy link"
+                            t-on-click="() => this.copy(link)"><i class="oi" data-icon="content_copy"/></button>
+                        <a class="btn btn-secondary" title="Open link" aria-label="Open link"
+                            t-att-href="link.url" target="_blank" rel="noopener"><i class="oi" data-icon="open_in_new"/></a>
+                        <button class="btn btn-secondary o_file_manager_revoke" title="Remove link" aria-label="Remove link"
+                            t-on-click="() => this.revoke(link)"><i class="oi" data-icon="delete"/></button>
+                    </div>
+                </div>
+            </t>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="() => this.props.close()">Close</button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

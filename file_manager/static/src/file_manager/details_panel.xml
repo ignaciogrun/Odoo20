@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="file_manager.DetailsPanel">
+        <aside class="o_file_manager_details" aria-label="Details">
+            <div class="o_file_manager_details_header">
+                <strong>Details</strong>
+                <button class="btn btn-link btn-sm" type="button" aria-label="Close details" title="Close details"
+                    t-on-click="() => this.props.onClose()"><i class="oi" data-icon="close"/></button>
+            </div>
+
+            <div t-if="!this.props.selection.length" class="o_file_manager_details_empty">
+                <i class="oi" data-icon="info"/>
+                <p>Select a file or folder to see its details.</p>
+            </div>
+
+            <div t-elif="this.props.selection.length > 1" class="o_file_manager_details_empty">
+                <i class="oi" data-icon="check"/>
+                <p><t t-out="this.props.selection.length"/> items selected</p>
+            </div>
+
+            <t t-else="">
+                <t t-set="item" t-value="this.props.selection[0]"/>
+                <div class="o_file_manager_details_body">
+                    <t t-if="item.kind === 'document'">
+                        <button type="button" class="o_file_manager_details_preview btn"
+                            aria-label="Open preview" t-on-click="() => this.props.onPreview(item)">
+                            <img t-if="this.props.thumbnailUrl(item)" t-att-src="this.props.thumbnailUrl(item)" alt=""/>
+                            <i t-elif="item.doc_type === 'url'" class="oi o_file_manager_big_icon" data-icon="link"/>
+                            <span t-else="" class="o_image o_file_manager_mimetype" role="img"
+                                t-att-data-mimetype="item.mimetype"/>
+                        </button>
+                        <h5 class="o_file_manager_details_name" t-out="item.name"/>
+                        <dl class="o_file_manager_facts">
+                            <dt>Type</dt><dd class="text-break" t-out="this.typeLabel(item)"/>
+                            <t t-if="item.doc_type === 'url'">
+                                <dt>Link</dt>
+                                <dd class="text-break"><a t-att-href="item.url" target="_blank" rel="noopener noreferrer" t-out="item.url"/></dd>
+                            </t>
+                            <t t-else=""><dt>Size</dt><dd t-out="this.formatSize(item.file_size)"/></t>
+                            <dt>Folder</dt><dd t-out="item.folder_name or 'My Files'"/>
+                            <dt>Owner</dt><dd t-out="item.owner"/>
+                            <dt>Modified</dt><dd t-out="this.formatDate(item.write_date)"/>
+                            <dt>Created</dt><dd t-out="this.formatDate(item.create_date)"/>
+                            <t t-if="item.locked_by"><dt>Locked by</dt><dd t-out="item.locked_by"/></t>
+                        </dl>
+
+                        <h6>Tags</h6>
+                        <div class="o_file_manager_tags mb-2">
+                            <span t-foreach="item.tags" t-as="tag" t-key="tag.id"
+                                class="o_tag badge rounded-pill o_badge"
+                                t-attf-class="o_tag_color_{{ tag.color }}">
+                                <span t-out="tag.name"/>
+                                <button t-if="item.can_write" type="button" class="btn btn-link p-0 ms-1 lh-1"
+                                    t-att-aria-label="'Remove tag ' + tag.name"
+                                    t-on-click="() => this.removeTag(item, tag)"><i class="oi oi-sm" data-icon="close_small"/></button>
+                            </span>
+                            <span t-if="!item.tags.length and !item.can_write" class="text-muted small">No tags</span>
+                        </div>
+                        <t t-if="item.can_write">
+                            <input class="form-control form-control-sm o_file_manager_tag_input" type="text"
+                                placeholder="Add a tag and press Enter" aria-label="Add a tag"
+                                list="o_file_manager_tag_options"
+                                t-model.proxy="this.state.newTag"
+                                t-on-keydown="(ev) => this.onTagKeydown(ev, item)"/>
+                            <datalist id="o_file_manager_tag_options">
+                                <option t-foreach="this.tagsNotOnItem(item)" t-as="tag" t-key="tag.id" t-att-value="tag.name"/>
+                            </datalist>
+                        </t>
+
+                        <h6 class="mt-3">Description</h6>
+                        <textarea class="form-control form-control-sm o_file_manager_description" rows="3"
+                            aria-label="Description" placeholder="Add a description"
+                            t-att-readonly="!item.can_write"
+                            t-model.proxy="this.state.description"
+                            t-on-blur="() => this.saveDescription(item)"/>
+
+                        <t t-if="item.doc_type === 'file'">
+                            <div class="d-flex align-items-center justify-content-between mt-3 mb-1">
+                                <h6 class="mb-0">Versions</h6>
+                                <button t-if="item.can_write and item.active" type="button"
+                                    class="btn btn-link btn-sm p-0 o_file_manager_new_version"
+                                    t-on-click="() => this.props.onUploadVersion(item)">Upload new version</button>
+                            </div>
+                            <ul class="o_file_manager_versions">
+                                <li t-foreach="this.state.versions" t-as="version" t-key="version.id">
+                                    <a t-att-href="this.versionUrl(version)" class="text-truncate" t-out="version.name"/>
+                                    <small class="text-muted">
+                                        <t t-out="this.formatDate(version.date)"/> · <t t-out="version.author"/> · <t t-out="this.formatSize(version.file_size)"/>
+                                    </small>
+                                    <span t-if="version.is_current" class="badge text-bg-primary align-self-start">Current</span>
+                                    <button t-elif="item.can_write" type="button" class="btn btn-link btn-sm p-0 align-self-start"
+                                        t-on-click="() => this.restoreVersion(item, version)">Restore this version</button>
+                                </li>
+                            </ul>
+                        </t>
+                    </t>
+
+                    <t t-else="">
+                        <div class="o_file_manager_details_preview">
+                            <i class="oi o_file_manager_big_icon o_file_manager_folder_icon" data-icon="folder"/>
+                        </div>
+                        <h5 class="o_file_manager_details_name" t-out="item.name"/>
+                        <dl class="o_file_manager_facts">
+                            <dt>Files</dt><dd t-out="item.document_count"/>
+                            <dt>Owner</dt><dd t-out="item.owner"/>
+                            <dt>Access</dt><dd t-out="this.accessLabel(item.access_mode)"/>
+                            <dt>Modified</dt><dd t-out="this.formatDate(item.write_date)"/>
+                        </dl>
+                        <p t-if="item.description" class="text-prewrap small" t-out="item.description"/>
+                    </t>
+                </div>
+            </t>
+        </aside>
+    </t>
+</templates>

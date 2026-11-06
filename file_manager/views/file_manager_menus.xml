@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_file_manager_root" name="Files" sequence="40"
+        action="action_file_manager"
+        web_icon="file_manager,static/description/icon.png"
+        groups="base.group_user"/>
+    <menuitem id="menu_file_manager_files" name="Files" sequence="10"
+        parent="menu_file_manager_root" action="action_file_manager"/>
+    <menuitem id="menu_file_manager_shares" name="Share Links" sequence="20"
+        parent="menu_file_manager_root" action="action_file_manager_share"/>
+    <menuitem id="menu_file_manager_config" name="Configuration" sequence="30"
+        parent="menu_file_manager_root" groups="group_file_manager_admin"/>
+    <menuitem id="menu_file_manager_folders" name="All Folders" sequence="10"
+        parent="menu_file_manager_config" action="action_file_manager_folder"/>
+    <menuitem id="menu_file_manager_tags" name="Tags" sequence="20"
+        parent="menu_file_manager_config" action="action_file_manager_tag"/>
+</odoo>

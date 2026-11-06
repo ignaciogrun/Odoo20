@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Desktop: the 9-dot button opens the home menu instead of a dropdown list. -->
+    <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_navbar_apps_menu')]/Dropdown" position="replace">
+            <a href="/odoo/home"
+                class="dropdown-toggle o_jto_home_menu_toggle"
+                title="Home Menu"
+                aria-label="Home Menu"
+                data-hotkey="h"
+                data-available-offline=""
+                t-on-click.prevent="this.onHomeMenuClick">
+                <i class="oi" data-icon="apps"/>
+            </a>
+        </xpath>
+    </t>
+
+</templates>

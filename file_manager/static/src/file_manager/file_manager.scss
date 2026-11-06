@@ -1,0 +1,559 @@
+$-sidebar-width: 240px;
+$-details-width: 300px;
+
+.o_file_manager {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: $o-view-background-color;
+    outline: none;
+}
+
+.o_file_manager_sidebar {
+    display: flex;
+    flex: 0 0 $-sidebar-width;
+    flex-direction: column;
+    width: $-sidebar-width;
+    padding: 12px 8px;
+    overflow-y: auto;
+    border-right: 1px solid $border-color;
+}
+
+.o_file_manager_sidebar_title {
+    margin: 16px 8px 6px;
+    color: var(--secondary-color);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.o_file_manager_section,
+.o_file_manager_tree_label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding: 5px 8px;
+    color: var(--body-color);
+    text-align: left;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.o_file_manager_section:hover,
+.o_file_manager_tree_row:hover {
+    background: var(--tertiary-bg);
+}
+
+.o_file_manager_section.active,
+.o_file_manager_tree_row.active {
+    background: var(--secondary-bg);
+    font-weight: 600;
+}
+
+.o_file_manager_tree_row {
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+}
+
+.o_file_manager_tree_label {
+    flex: 1;
+    padding-left: 2px;
+}
+
+.o_file_manager_tree_toggle {
+    flex: none;
+    width: 22px;
+    padding: 0;
+    color: var(--secondary-color);
+}
+
+.o_file_manager_tree_spacer {
+    flex: none;
+    width: 22px;
+}
+
+.o_file_manager_tag_filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 8px;
+
+    .o_tag {
+        cursor: pointer;
+        opacity: 0.75;
+    }
+
+    .o_file_manager_tag_active {
+        outline: 2px solid currentColor;
+        opacity: 1;
+    }
+}
+
+.o_file_manager_main {
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.o_file_manager_header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid $border-color;
+}
+
+.o_file_manager_menu_button {
+    display: none;
+}
+
+.o_file_manager_breadcrumbs {
+    display: flex;
+    flex: 1 1 160px;
+    gap: 2px;
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.o_file_manager_search {
+    position: relative;
+    flex: 0 1 240px;
+    min-width: 120px;
+
+    > .oi {
+        position: absolute;
+        top: 50%;
+        left: 8px;
+        transform: translateY(-50%);
+    }
+
+    > input {
+        padding-left: 30px;
+    }
+}
+
+.o_file_manager_view_controls {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.o_file_manager_actionbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 16px;
+    background: var(--tertiary-bg);
+    border-bottom: 1px solid $border-color;
+}
+
+.o_file_manager_content {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.o_file_manager_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+    gap: 12px;
+}
+
+.o_file_manager_card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+
+    &:hover {
+        border-color: var(--secondary-color);
+    }
+
+    &:hover .o_file_manager_check,
+    .o_file_manager_check:checked,
+    &.o_file_manager_selected .o_file_manager_check {
+        opacity: 1;
+    }
+}
+
+.o_file_manager_check {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 1;
+    margin: 0;
+    opacity: 0;
+}
+
+.o_file_manager_badges {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    z-index: 1;
+    display: flex;
+    gap: 4px;
+    padding: 0 3px;
+    background: $o-view-background-color;
+    border-radius: 6px;
+}
+
+.o_file_manager_selected,
+.o_file_manager_selected > td {
+    background: rgba(var(--primary-rgb), 0.1);
+    border-color: var(--primary);
+}
+
+.o_file_manager_drop_target,
+.o_file_manager_drop_target > td {
+    background: rgba(var(--primary-rgb), 0.2);
+    outline: 2px dashed var(--primary);
+    outline-offset: -2px;
+}
+
+.o_file_manager_thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    background: var(--tertiary-bg);
+    border-radius: 7px;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .oi {
+        font-size: 56px;
+    }
+}
+
+.o_file_manager_folder_icon {
+    color: #e0a93b;
+}
+
+.o_file_manager_link_icon {
+    color: var(--secondary-color);
+}
+
+.o_file_manager_mimetype {
+    display: block;
+    width: 64px;
+    height: 64px;
+    background-size: contain;
+}
+
+.o_file_manager_mimetype_small {
+    display: inline-block;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+}
+
+.o_file_manager_big_icon {
+    font-size: 64px;
+}
+
+.o_file_manager_card_name {
+    overflow: hidden;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_file_manager_card_meta {
+    min-height: 1.2em;
+    overflow: hidden;
+    color: var(--secondary-color);
+    font-size: 0.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_file_manager_row {
+    cursor: pointer;
+    user-select: none;
+}
+
+.o_file_manager_table td {
+    vertical-align: middle;
+}
+
+.o_file_manager_col_check {
+    width: 32px;
+}
+
+.o_file_manager_col_name {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    max-width: 480px;
+}
+
+.o_file_manager_empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 72px 16px;
+    color: var(--secondary-color);
+    text-align: center;
+
+    > .oi {
+        margin-bottom: 8px;
+        font-size: 56px;
+    }
+}
+
+.o_file_manager_drop_overlay {
+    position: absolute;
+    inset: 8px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background: rgba(var(--primary-rgb), 0.12);
+    border: 2px dashed var(--primary);
+    border-radius: 12px;
+    font-size: 1.1rem;
+    text-align: center;
+
+    .oi {
+        font-size: 56px;
+    }
+}
+
+.o_file_manager_uploads {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: calc(100% - 32px);
+    max-width: 320px;
+    max-height: 40%;
+    padding: 10px;
+    overflow-y: auto;
+    background: $o-view-background-color;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+
+    .progress {
+        height: 5px;
+    }
+}
+
+.o_file_manager_details {
+    display: flex;
+    flex: 0 0 $-details-width;
+    flex-direction: column;
+    width: $-details-width;
+    min-height: 0;
+    border-left: 1px solid $border-color;
+}
+
+.o_file_manager_details_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px 10px 16px;
+    border-bottom: 1px solid $border-color;
+}
+
+.o_file_manager_details_body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.o_file_manager_details_empty {
+    padding: 48px 24px;
+    color: var(--secondary-color);
+    text-align: center;
+
+    .oi {
+        font-size: 40px;
+    }
+}
+
+.o_file_manager_details_preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 160px;
+    margin-bottom: 12px;
+    padding: 0;
+    overflow: hidden;
+    background: var(--tertiary-bg);
+    border-radius: 8px;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+
+.o_file_manager_details_name {
+    overflow-wrap: anywhere;
+}
+
+.o_file_manager_facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 12px;
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+
+    dt {
+        color: var(--secondary-color);
+        font-weight: 400;
+    }
+
+    dd {
+        min-width: 0;
+        margin: 0;
+    }
+}
+
+.o_file_manager_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.o_file_manager_versions {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        flex-direction: column;
+        padding: 6px 0;
+        border-top: 1px solid $border-color;
+    }
+}
+
+.o_file_manager_context_menu {
+    position: absolute;
+    z-index: 20;
+    min-width: 210px;
+}
+
+.o_file_manager_move_list {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.o_file_manager_move_row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    border: 0;
+
+    &.active {
+        background: var(--secondary-bg);
+        font-weight: 600;
+    }
+}
+
+.o_file_manager_link {
+    padding: 8px 0;
+    border-top: 1px solid $border-color;
+}
+
+.o_file_manager_backdrop {
+    display: none;
+}
+
+@media (max-width: 991.98px) {
+    .o_file_manager_action_label {
+        display: none;
+    }
+
+    .o_file_manager_col_optional {
+        display: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .o_file_manager_menu_button {
+        display: inline-flex;
+    }
+
+    .o_file_manager_sidebar {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 30;
+        background: $o-view-background-color;
+        transform: translateX(-100%);
+        transition: transform 0.15s;
+    }
+
+    .o_file_manager_sidebar_open {
+        transform: none;
+    }
+
+    .o_file_manager_backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: 29;
+        display: block;
+        background: rgba(0, 0, 0, 0.35);
+    }
+
+    .o_file_manager_details {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 25;
+        width: 90%;
+        max-width: $-details-width;
+        background: $o-view-background-color;
+    }
+
+    .o_file_manager_search {
+        flex: 1 1 100%;
+        order: 10;
+    }
+
+    .o_file_manager_grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .o_file_manager_check {
+        opacity: 1;
+    }
+}

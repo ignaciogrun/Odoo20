@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="jto_home_menu.HomeMenu">
+        <div class="o_jto_home_menu overflow-auto" t-att-class="this.props.className">
+            <div class="o_jto_home_menu_inner mx-auto">
+                <div class="o_jto_home_menu_header">
+                    <h1 class="o_jto_home_menu_greeting" t-out="this.greeting"/>
+                    <div class="o_jto_home_menu_search">
+                        <i class="oi" data-icon="search" aria-hidden="true"/>
+                        <input type="search"
+                            class="form-control"
+                            placeholder="Search apps…"
+                            aria-label="Search apps"
+                            autocomplete="off"
+                            data-allow-hotkeys="true"
+                            t-ref="this.searchRef"
+                            t-att-value="this.state.query"
+                            t-on-input="this.onSearchInput"
+                            t-on-keydown="this.onSearchKeydown"/>
+                    </div>
+                </div>
+
+                <nav class="o_jto_home_menu_grid" role="menu" aria-label="Apps">
+                    <a t-foreach="this.visibleApps" t-as="app" t-key="app.id"
+                        class="o_jto_home_menu_app"
+                        role="menuitem"
+                        t-att-href="app.href"
+                        t-att-data-menu-xmlid="app.xmlid"
+                        t-on-click.prevent="() => this.openApp(app)">
+                        <span class="o_jto_home_menu_icon">
+                            <img t-if="app.image" t-att-src="app.image" alt="" draggable="false"/>
+                            <span t-else="" class="o_jto_home_menu_icon_glyph"
+                                t-att-style="'background:' + (app.background || 'var(--o-jto-tile-bg)') + ';color:' + (app.color || 'inherit')">
+                                <i class="oi" t-att-data-icon="app.iconClass" aria-hidden="true"/>
+                            </span>
+                        </span>
+                        <span class="o_jto_home_menu_label" t-out="app.name"/>
+                    </a>
+                </nav>
+
+                <p t-if="!this.visibleApps.length" class="o_jto_home_menu_empty text-muted text-center">
+                    No app matches “<t t-out="this.state.query"/>”
+                </p>
+            </div>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="share_layout" name="Files: public page layout">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title t-out="title"/>
+                <link rel="stylesheet" href="/file_manager/static/share/share.css"/>
+            </head>
+            <body>
+                <main class="fm_share">
+                    <t t-out="0"/>
+                </main>
+            </body>
+        </html>
+    </template>
+
+    <template id="share_page" name="Files: public share page">
+        <t t-call="file_manager.share_layout">
+            <t t-set="title" t-value="share.name"/>
+            <header class="fm_share_header">
+                <div>
+                    <h1 t-out="share.name"/>
+                    <p>
+                        <t t-out="len(rows)"/> <t t-out="'file' if len(rows) == 1 else 'files'"/>
+                        <t t-if="share.expiration_date"> · Link expires on <t t-out="share.expiration_date"/></t>
+                    </p>
+                </div>
+                <a t-if="has_files" class="fm_share_button fm_share_primary"
+                    t-attf-href="/file_manager/share/#{share.token}/download">Download all</a>
+            </header>
+            <p t-if="not rows" class="fm_share_empty">There is nothing in this link right now.</p>
+            <ul t-else="" class="fm_share_list">
+                <li t-foreach="rows" t-as="row" class="fm_share_row">
+                    <div class="fm_share_thumb">
+                        <img t-if="row['is_image']" loading="lazy" alt=""
+                            t-attf-src="/file_manager/share/#{share.token}/file/#{row['id']}?inline=1"/>
+                        <span t-else="" t-out="row['extension']"/>
+                    </div>
+                    <div class="fm_share_info">
+                        <strong t-out="row['name']"/>
+                        <small>
+                            <t t-if="row['path']"><t t-out="row['path']"/> · </t>
+                            <t t-out="row['size']"/>
+                        </small>
+                    </div>
+                    <a t-if="row['url']" class="fm_share_button" t-att-href="row['url']"
+                        target="_blank" rel="noopener noreferrer">Open link</a>
+                    <a t-else="" class="fm_share_button"
+                        t-attf-href="/file_manager/share/#{share.token}/file/#{row['id']}">Download</a>
+                </li>
+            </ul>
+        </t>
+    </template>
+
+    <template id="share_unavailable" name="Files: link unavailable">
+        <t t-call="file_manager.share_layout">
+            <t t-set="title">Link unavailable</t>
+            <div class="fm_share_empty">
+                <h1>This link is no longer available</h1>
+                <p>It may have expired or been removed. Ask the person who sent it for a new one.</p>
+            </div>
+        </t>
+    </template>
+</odoo>

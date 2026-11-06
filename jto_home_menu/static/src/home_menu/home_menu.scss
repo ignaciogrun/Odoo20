@@ -1,0 +1,176 @@
+.o_jto_home_menu {
+    --o-jto-icon-size: 72px;
+    --o-jto-tile-bg: var(--bs-tertiary-bg, #f1f3f5);
+    --o-jto-gap: 2rem 1rem;
+
+    flex-direction: column;
+    background:
+        radial-gradient(120% 80% at 0% 0%, rgba(var(--bs-primary-rgb, 113, 75, 103), .12), transparent 60%),
+        radial-gradient(100% 70% at 100% 100%, rgba(var(--bs-info-rgb, 1, 126, 132), .10), transparent 60%),
+        var(--bs-body-bg, #fff);
+
+    .o_jto_home_menu_inner {
+        width: 100%;
+        max-width: 960px;
+        padding: 3rem 1.5rem 4rem;
+    }
+
+    .o_jto_home_menu_header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .o_jto_home_menu_greeting {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .o_jto_home_menu_search {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+
+        > .oi {
+            position: absolute;
+            top: 50%;
+            left: .9rem;
+            transform: translateY(-50%);
+            opacity: .5;
+            pointer-events: none;
+        }
+
+        > input {
+            padding: .6rem 1rem .6rem 2.4rem;
+            border-radius: 999px;
+            font-size: 1rem; // >= 16px keeps iOS Safari from zooming on focus
+        }
+    }
+
+    .o_jto_home_menu_grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: var(--o-jto-gap);
+        justify-items: center;
+    }
+
+    .o_jto_home_menu_app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .6rem;
+        width: 100%;
+        max-width: 120px;
+        padding: .5rem .25rem;
+        border-radius: .75rem;
+        color: var(--bs-body-color);
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
+
+        &:hover, &:focus-visible {
+            .o_jto_home_menu_icon {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .35);
+            }
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px var(--bs-primary);
+        }
+        &:active .o_jto_home_menu_icon {
+            transform: scale(.94);
+        }
+    }
+
+    .o_jto_home_menu_icon {
+        display: block;
+        width: var(--o-jto-icon-size);
+        height: var(--o-jto-icon-size);
+        border-radius: 22%;
+        overflow: hidden;
+        box-shadow: 0 4px 10px -4px rgba(0, 0, 0, .3);
+        transition: transform .15s ease, box-shadow .15s ease;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            user-select: none;
+        }
+    }
+
+    .o_jto_home_menu_icon_glyph {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        font-size: calc(var(--o-jto-icon-size) * .45);
+    }
+
+    .o_jto_home_menu_label {
+        width: 100%;
+        font-size: .9rem;
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: center;
+        overflow-wrap: anywhere;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .o_jto_home_menu_empty {
+        margin-top: 2rem;
+    }
+
+    // Tablets
+    @include media-breakpoint-down(md) {
+        --o-jto-icon-size: 64px;
+
+        .o_jto_home_menu_inner {
+            padding: 2rem 1rem 3rem;
+        }
+    }
+
+    // Phones: 4 columns, like a phone home screen
+    @include media-breakpoint-down(sm) {
+        --o-jto-icon-size: 56px;
+        --o-jto-gap: 1.25rem .5rem;
+
+        .o_jto_home_menu_inner {
+            padding: 1.25rem 1rem calc(2rem + env(safe-area-inset-bottom));
+        }
+        .o_jto_home_menu_header {
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .o_jto_home_menu_greeting {
+            font-size: 1.35rem;
+        }
+        .o_jto_home_menu_search {
+            max-width: none;
+        }
+        .o_jto_home_menu_grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .o_jto_home_menu_app {
+            gap: .4rem;
+            padding: .25rem 0;
+        }
+        .o_jto_home_menu_label {
+            font-size: .75rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .o_jto_home_menu_icon {
+            transition: none;
+        }
+    }
+}

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_file_manager_document_form" model="ir.ui.view">
+        <field name="name">file.manager.document.form</field>
+        <field name="model">file.manager.document</field>
+        <field name="arch" type="xml">
+            <form string="File" create="false">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="folder_id"/>
+                            <field name="owner_id"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                        <group>
+                            <field name="doc_type" readonly="1"/>
+                            <field name="url" widget="url" invisible="doc_type != 'url'"/>
+                            <field name="mimetype" invisible="doc_type != 'file'"/>
+                            <field name="file_size" string="Size (bytes)" invisible="doc_type != 'file'"/>
+                            <field name="locked_by_id" readonly="1" invisible="not locked_by_id"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Add a description..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_file_manager_document_list" model="ir.ui.view">
+        <field name="name">file.manager.document.list</field>
+        <field name="model">file.manager.document</field>
+        <field name="arch" type="xml">
+            <list string="Files" create="false">
+                <field name="name"/>
+                <field name="folder_id"/>
+                <field name="owner_id" widget="many2one_avatar_user"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="write_date" string="Modified"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_file_manager_document" model="ir.actions.act_window">
+        <field name="name">File</field>
+        <field name="res_model">file.manager.document</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_file_manager" model="ir.actions.client">
+        <field name="name">Files</field>
+        <field name="tag">file_manager.main</field>
+        <field name="path">files</field>
+    </record>
+</odoo>
