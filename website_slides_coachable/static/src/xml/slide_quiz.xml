@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- The full-screen player draws the quiz in the browser instead of on the server. -->
+    <t t-inherit="slide.slide.quiz" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('h4')]" position="after">
+            <div t-if="question.coachable_url" class="o_wslides_coachable_frame">
+                <iframe t-att-src="question.coachable_url" title="Play animation" tabindex="-1"
+                    scrolling="no" loading="lazy" referrerpolicy="no-referrer"
+                    sandbox="allow-scripts allow-same-origin"/>
+            </div>
+        </xpath>
+    </t>
+</templates>

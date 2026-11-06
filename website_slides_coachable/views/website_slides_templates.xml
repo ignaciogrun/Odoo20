@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="lesson_content_quiz_question" inherit_id="website_slides.lesson_content_quiz_question">
+        <xpath expr="//div[@t-att-data-question-id]/div[hasclass('row')]" position="after">
+            <div t-if="question['coachable_url']" class="o_wslides_coachable_frame">
+                <iframe t-att-src="question['coachable_url']" title="Play animation" tabindex="-1"
+                    scrolling="no" loading="lazy" referrerpolicy="no-referrer"
+                    sandbox="allow-scripts allow-same-origin"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>
