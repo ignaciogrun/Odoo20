@@ -1,0 +1,59 @@
+// The Coachable page is loaded at a fixed size, so that its field always sits at the
+// same place, then moved and scaled so that only the field shows inside this box.
+// Everything above the field, including the name of the play, stays out of view.
+$-page-width: 1200px;
+$-page-height: 800px;
+$-field-left: 178px;
+$-field-top: 244px;
+$-field-width: 844px;
+$-field-height: 473px;
+
+@mixin o-wslides-coachable-size($-width) {
+    $-scale: $-width / $-field-width;
+
+    width: $-width;
+    height: round($-field-height * $-scale);
+
+    iframe {
+        transform: scale($-scale) translate(-$-field-left, -$-field-top);
+    }
+}
+
+.o_wslides_coachable_frame {
+    @include o-wslides-coachable-size(666px);
+
+    position: relative;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    background: #4fa862;
+    border-radius: 10px;
+
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: $-page-width;
+        height: $-page-height;
+        border: 0;
+        // Nothing on the page is meant to be clicked: no links away from the quiz.
+        pointer-events: none;
+        transform-origin: 0 0;
+    }
+}
+
+.o_wslides_coachable_frame_small {
+    @include o-wslides-coachable-size(400px);
+}
+
+@media (max-width: 767.98px) {
+    .o_wslides_coachable_frame {
+        @include o-wslides-coachable-size(500px);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .o_wslides_coachable_frame {
+        @include o-wslides-coachable-size(320px);
+    }
+}

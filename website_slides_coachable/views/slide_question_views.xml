@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="slide_question_view_form" model="ir.ui.view">
+        <field name="name">slide.question.view.form.coachable</field>
+        <field name="model">slide.question</field>
+        <field name="inherit_id" ref="website_slides.slide_question_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <group>
+                    <field name="coachable_url" widget="url"
+                        placeholder="https://coachableplays.com/shared/..."/>
+                </group>
+                <field name="coachable_preview" nolabel="1" readonly="1"
+                    invisible="not coachable_preview"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
