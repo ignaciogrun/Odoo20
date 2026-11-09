@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rugby_match_player_view_list" model="ir.ui.view">
+        <field name="name">rugby.match.player.list</field>
+        <field name="model">rugby.match.player</field>
+        <field name="arch" type="xml">
+            <list create="false" default_order="kickoff desc, jersey_number">
+                <field name="player_id" widget="many2one_avatar"/>
+                <field name="match_id"/>
+                <field name="kickoff" widget="date" optional="show"/>
+                <field name="team_id" optional="hide"/>
+                <field name="season_id" optional="hide"/>
+                <field name="jersey_number" optional="show"/>
+                <field name="position" optional="show"/>
+                <field name="minutes_played" sum="Minutes"/>
+                <field name="tackles" sum="Tackles"/>
+                <field name="tries" sum="Tries"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="rugby_match_player_view_pivot" model="ir.ui.view">
+        <field name="name">rugby.match.player.pivot</field>
+        <field name="model">rugby.match.player</field>
+        <field name="arch" type="xml">
+            <pivot string="Player Stats" sample="1">
+                <field name="player_id" type="row"/>
+                <field name="appearances" type="measure"/>
+                <field name="minutes_played" type="measure"/>
+                <field name="tackles" type="measure"/>
+                <field name="tries" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="rugby_match_player_view_graph" model="ir.ui.view">
+        <field name="name">rugby.match.player.graph</field>
+        <field name="model">rugby.match.player</field>
+        <field name="arch" type="xml">
+            <graph string="Player Stats" type="bar" order="desc" sample="1">
+                <field name="player_id"/>
+                <field name="tries" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="rugby_match_player_view_search" model="ir.ui.view">
+        <field name="name">rugby.match.player.search</field>
+        <field name="model">rugby.match.player</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="player_id"/>
+                <field name="match_id"/>
+                <field name="season_id"/>
+                <field name="team_id"/>
+                <filter name="played" string="Played Matches" domain="[('match_state', '=', 'played')]"/>
+                <separator/>
+                <filter name="starters" string="Starters" domain="[('starter', '=', True)]"/>
+                <filter name="replacements" string="Replacements" domain="[('starter', '=', False)]"/>
+                <separator/>
+                <filter name="wins" string="Wins" domain="[('result', '=', 'win')]"/>
+                <filter name="losses" string="Losses" domain="[('result', '=', 'loss')]"/>
+                <filter name="group_player" string="Player" context="{'group_by': 'player_id'}"/>
+                <filter name="group_season" string="Season" context="{'group_by': 'season_id'}"/>
+                <filter name="group_team" string="Team" context="{'group_by': 'team_id'}"/>
+                <filter name="group_position" string="Position" context="{'group_by': 'position'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rugby_player_stats" model="ir.actions.act_window">
+        <field name="name">Player Stats</field>
+        <field name="res_model">rugby.match.player</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="path">player-stats</field>
+        <field name="context">{'search_default_played': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No stats yet</p>
+            <p>Stats come from match lineups. Open a played match and add each player's minutes, tackles and tries.</p>
+        </field>
+    </record>
+</odoo>

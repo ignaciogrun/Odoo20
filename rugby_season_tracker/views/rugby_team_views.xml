@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rugby_team_view_list" model="ir.ui.view">
+        <field name="name">rugby.team.list</field>
+        <field name="model">rugby.team</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name" placeholder="e.g. Men's XV"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_rugby_team" model="ir.actions.act_window">
+        <field name="name">Teams</field>
+        <field name="res_model">rugby.team</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add the club's teams</p>
+            <p>For example Men's XV, Women's XV or a 7s side. Every season belongs to a team.</p>
+        </field>
+    </record>
+</odoo>

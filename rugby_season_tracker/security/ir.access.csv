@@ -1,0 +1,5 @@
+id,name,model_id,group_id/id,operation,domain
+access_rugby_team_user,Rugby team: internal users,rugby.team,base.group_user,crud,
+access_rugby_season_user,Rugby season: internal users,rugby.season,base.group_user,crud,
+access_rugby_match_user,Rugby match: internal users,rugby.match,base.group_user,crud,
+access_rugby_match_player_user,Rugby lineup: internal users,rugby.match.player,base.group_user,crud,

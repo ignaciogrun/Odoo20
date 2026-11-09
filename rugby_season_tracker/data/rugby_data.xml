@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Added to a contact the first time they appear in a lineup, so the
+             player list is easy to filter in Contacts. -->
+        <record id="partner_category_player" model="res.partner.category">
+            <field name="name">Player</field>
+        </record>
+    </data>
+</odoo>

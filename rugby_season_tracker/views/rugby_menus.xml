@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_rugby_root" name="Season Tracker" sequence="50"
+        action="action_rugby_match"
+        web_icon="rugby_season_tracker,static/description/icon.png"
+        groups="base.group_user"/>
+    <menuitem id="menu_rugby_matches" name="Matches" sequence="10"
+        parent="menu_rugby_root" action="action_rugby_match"/>
+    <menuitem id="menu_rugby_seasons" name="Seasons" sequence="20"
+        parent="menu_rugby_root" action="action_rugby_season"/>
+    <menuitem id="menu_rugby_stats" name="Player Stats" sequence="30"
+        parent="menu_rugby_root" action="action_rugby_player_stats"/>
+    <menuitem id="menu_rugby_config" name="Configuration" sequence="90"
+        parent="menu_rugby_root"/>
+    <menuitem id="menu_rugby_teams" name="Teams" sequence="10"
+        parent="menu_rugby_config" action="action_rugby_team"/>
+</odoo>

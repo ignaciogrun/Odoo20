@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rugby_match_view_list" model="ir.ui.view">
+        <field name="name">rugby.match.list</field>
+        <field name="model">rugby.match</field>
+        <field name="arch" type="xml">
+            <list default_order="kickoff" decoration-muted="state == 'cancelled'">
+                <field name="kickoff"/>
+                <field name="name"/>
+                <field name="season_id" optional="show"/>
+                <field name="home_away" optional="show"/>
+                <field name="venue_id" optional="show"/>
+                <field name="score_display"/>
+                <field name="result" widget="badge"
+                    decoration-success="result == 'win'"
+                    decoration-danger="result == 'loss'"
+                    decoration-info="result == 'draw'"/>
+                <field name="state" widget="badge" optional="show"
+                    decoration-info="state == 'scheduled'"
+                    decoration-success="state == 'played'"/>
+                <field name="event_published" string="On Website" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="rugby_match_view_calendar" model="ir.ui.view">
+        <field name="name">rugby.match.calendar</field>
+        <field name="model">rugby.match</field>
+        <field name="arch" type="xml">
+            <calendar date_start="kickoff" date_stop="kickoff_end" color="team_id" mode="month"
+                      event_open_popup="true" quick_create="false">
+                <field name="team_id" filters="1"/>
+                <field name="venue_id"/>
+                <field name="score_display"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="rugby_match_view_form" model="ir.ui.view">
+        <field name="name">rugby.match.form</field>
+        <field name="model">rugby.match</field>
+        <field name="arch" type="xml">
+            <form string="Match">
+                <header>
+                    <button name="action_mark_played" string="Mark as Played" type="object"
+                        class="btn-primary" invisible="state != 'scheduled'"/>
+                    <button name="action_cancel" string="Cancel Match" type="object"
+                        invisible="state == 'cancelled'"
+                        confirm="Cancel this match? Its event will be hidden."/>
+                    <button name="action_reschedule" string="Back to Scheduled" type="object"
+                        invisible="state == 'scheduled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="scheduled,played"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_event" type="object" class="oe_stat_button"
+                            icon="confirmation_number" invisible="not event_id" groups="event.group_event_user">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Event</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Win" bg_color="text-bg-success" invisible="result != 'win'"/>
+                    <widget name="web_ribbon" title="Loss" bg_color="text-bg-danger" invisible="result != 'loss'"/>
+                    <widget name="web_ribbon" title="Draw" bg_color="text-bg-info" invisible="result != 'draw'"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-secondary" invisible="state != 'cancelled'"/>
+                    <field name="event_id" invisible="1"/>
+                    <field name="result" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1" placeholder="Team vs Opponent"/></h1>
+                    </div>
+                    <group>
+                        <group string="Fixture">
+                            <field name="season_id"/>
+                            <field name="opponent" placeholder="e.g. Tampa Bay Krewe"/>
+                            <field name="home_away" widget="radio" options="{'horizontal': true}"/>
+                            <field name="kickoff"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="venue_id" placeholder="Field or club address"/>
+                            <field name="event_published" widget="boolean_toggle" invisible="not event_id"/>
+                        </group>
+                        <!-- Scores can be typed before clicking "Mark as Played", so a past
+                             match can be entered in one go. -->
+                        <group string="Result" invisible="state == 'cancelled'">
+                            <field name="score_for"/>
+                            <field name="score_against"/>
+                            <field name="winner" invisible="state != 'played'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lineup &amp; Stats" name="lineup">
+                            <field name="lineup_ids" context="{'default_match_id': id}">
+                                <list editable="bottom" default_order="jersey_number"
+                                      decoration-muted="not starter">
+                                    <field name="jersey_number" string="No."/>
+                                    <field name="player_id" widget="many2one_avatar"
+                                        context="{'default_is_company': False}"/>
+                                    <field name="position"/>
+                                    <field name="starter" column_invisible="True"/>
+                                    <field name="minutes_played" sum="Minutes"/>
+                                    <field name="tackles" sum="Tackles"/>
+                                    <field name="tries" sum="Tries"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Match Recording" name="recording">
+                            <field name="recording_link"
+                                placeholder="Paste the link to the match video, for example a YouTube or Veo link"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="rugby_match_view_search" model="ir.ui.view">
+        <field name="name">rugby.match.search</field>
+        <field name="model">rugby.match</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="opponent"/>
+                <field name="season_id"/>
+                <field name="team_id"/>
+                <field name="venue_id"/>
+                <filter name="scheduled" string="Scheduled" domain="[('state', '=', 'scheduled')]"/>
+                <filter name="played" string="Played" domain="[('state', '=', 'played')]"/>
+                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="wins" string="Wins" domain="[('result', '=', 'win')]"/>
+                <filter name="losses" string="Losses" domain="[('result', '=', 'loss')]"/>
+                <filter name="draws" string="Draws" domain="[('result', '=', 'draw')]"/>
+                <separator/>
+                <filter name="home" string="Home" domain="[('home_away', '=', 'home')]"/>
+                <filter name="away" string="Away" domain="[('home_away', '=', 'away')]"/>
+                <filter name="group_season" string="Season" context="{'group_by': 'season_id'}"/>
+                <filter name="group_team" string="Team" context="{'group_by': 'team_id'}"/>
+                <filter name="group_result" string="Result" context="{'group_by': 'result'}"/>
+                <filter name="group_month" string="Month" context="{'group_by': 'kickoff:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rugby_match" model="ir.actions.act_window">
+        <field name="name">Matches</field>
+        <field name="res_model">rugby.match</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="path">matches</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add the season's first match</p>
+            <p>Each match gets its own event, kept off the website until you turn on "Show on Website".</p>
+        </field>
+    </record>
+</odoo>
