@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <!-- Each team gets an event tag in this category, so the website's
+             Event block can be filtered to one team's games. -->
+        <record id="event_tag_category_teams" model="event.tag.category">
+            <field name="name">Teams</field>
+        </record>
         <!-- Added to a contact the first time they appear in a lineup, so the
              player list is easy to filter in Contacts. -->
         <record id="partner_category_player" model="res.partner.category">
             <field name="name">Player</field>
         </record>
     </data>
+    <!-- On every install and upgrade: make sure teams and match events carry their tags. -->
+    <function model="rugby.team" name="_setup_event_tags"/>
 </odoo>

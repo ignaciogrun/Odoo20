@@ -18,7 +18,7 @@
                 <field name="state" widget="badge" optional="show"
                     decoration-info="state == 'scheduled'"
                     decoration-success="state == 'played'"/>
-                <field name="event_published" string="On Website" optional="hide"/>
+                <field name="show_result" string="Result on Website" optional="hide"/>
             </list>
         </field>
     </record>
@@ -78,7 +78,6 @@
                             <field name="kickoff"/>
                             <field name="duration" widget="float_time"/>
                             <field name="venue_id" placeholder="Field or club address"/>
-                            <field name="event_published" widget="boolean_toggle" invisible="not event_id"/>
                         </group>
                         <!-- Scores can be typed before clicking "Mark as Played", so a past
                              match can be entered in one go. -->
@@ -86,6 +85,7 @@
                             <field name="score_for"/>
                             <field name="score_against"/>
                             <field name="winner" invisible="state != 'played'"/>
+                            <field name="show_result" widget="boolean_toggle"/>
                         </group>
                     </group>
                     <notebook>
@@ -150,7 +150,7 @@
         <field name="path">matches</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Add the season's first match</p>
-            <p>Each match gets its own event, kept off the website until you turn on "Show on Website".</p>
+            <p>Each match gets its own event, tagged with its team, which you publish in Events. "Show Result on Website" adds a played match to its team's results table.</p>
         </field>
     </record>
 </odoo>

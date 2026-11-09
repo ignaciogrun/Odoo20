@@ -5,9 +5,10 @@
 Enter a team's games for the season. Each match creates its own event (kept off
 the website until you publish it) and keeps it in step when the match changes.
 After the game, record the score, the lineup and each player's minutes, tackles
-and tries, plus a link to the match recording.
+and tries, plus a link to the match recording. Each team can have its own public
+Schedule & Results page listing its upcoming matches and the season's results.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Marketing/Events",
     "sequence": 50,
     "author": "Ignacio Grunwaldt",
@@ -22,6 +23,7 @@ and tries, plus a link to the match recording.
         "views/rugby_match_views.xml",
         "views/rugby_season_views.xml",
         "views/rugby_menus.xml",
+        "views/rugby_website_templates.xml",
     ],
     "installable": True,
     "application": True,

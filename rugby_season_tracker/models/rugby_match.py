@@ -1,6 +1,11 @@
+import re
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
+
+# The first web address in the recording field: a link's target, or a pasted address.
+LINK_TARGET = re.compile(r"""href=["'](https?://[^"']+)["']""")
+PASTED_ADDRESS = re.compile(r"""https?://[^\s<>"']+""")
 
 # Changing any of these changes the event's name, time or place.
 EVENT_FIELDS = {"opponent", "home_away", "season_id", "kickoff", "duration", "venue_id"}
@@ -40,13 +45,17 @@ class RugbyMatch(models.Model):
     winner = fields.Char(compute="_compute_winner")
     score_display = fields.Char("Score", compute="_compute_winner")
     recording_link = fields.Html("Match Recording")
+    recording_url = fields.Char(compute="_compute_recording_url", help="Used for the Watch button on the website.")
     lineup_ids = fields.One2many("rugby.match.player", "match_id", string="Lineup")
     lineup_count = fields.Integer(compute="_compute_lineup_count")
 
     event_id = fields.Many2one("event.event", string="Event", readonly=True, copy=False, ondelete="set null")
-    event_published = fields.Boolean(
-        "Show on Website", compute="_compute_event_published", inverse="_inverse_event_published",
-        help="Publishes the match's event on the website's Events page.",
+    # Only for the results table on the team's website page. The match's event
+    # (upcoming games, the Event block) is published separately, in Events.
+    show_result = fields.Boolean(
+        "Show Result on Website", tracking=True,
+        help="Lists this match in the results table on the team's Schedule & Results page once it's played. "
+             "It doesn't publish the match's event.",
     )
 
     _check_scores = models.Constraint(
@@ -89,19 +98,17 @@ class RugbyMatch(models.Model):
             match.score_display = f"{match.score_for} - {match.score_against}" if played else False
             match.winner = winners[match.result](match) if played and match.result else False
 
+    @api.depends("recording_link")
+    def _compute_recording_url(self):
+        for match in self:
+            html = str(match.recording_link or "")
+            found = LINK_TARGET.search(html) or PASTED_ADDRESS.search(html)
+            match.recording_url = found.group(1) if found and found.re is LINK_TARGET else (found and found.group(0))
+
     @api.depends("lineup_ids")
     def _compute_lineup_count(self):
         for match in self:
             match.lineup_count = len(match.lineup_ids)
-
-    @api.depends("event_id.is_published")
-    def _compute_event_published(self):
-        for match in self:
-            match.event_published = match.event_id.sudo().is_published
-
-    def _inverse_event_published(self):
-        for match in self.filtered("event_id"):
-            match.event_id.sudo().is_published = match.event_published
 
     # Events -------------------------------------------------------------
     # The module creates, updates and removes each match's event itself (as
@@ -117,9 +124,13 @@ class RugbyMatch(models.Model):
 
     def _sync_event(self):
         langs = [code for code, _name in self.env["res.lang"].get_installed()]
+        # Each event carries its team's tag (for the Event block's tag filter):
+        # swap any other team's tag for this match's team, keep other tags.
+        team_tags = self.env["rugby.team"].with_context(active_test=False).search([]).event_tag_id
         for match in self.filtered("event_id"):
             event = match.event_id.sudo()
-            event.write(match._event_values())
+            tags = (event.tag_ids - team_tags) | match.team_id.event_tag_id
+            event.write({**match._event_values(), "tag_ids": [Command.set(tags.ids)]})
             # The event name is translatable; a match name is the same in every
             # language, so set them all (one event at a time, as Odoo requires).
             event.update_field_translations("name", dict.fromkeys(langs, match.name))
@@ -137,8 +148,15 @@ class RugbyMatch(models.Model):
     def create(self, vals_list):
         matches = super().create(vals_list)
         Event = self.env["event.event"].sudo()
+        # Kickoff times on the website show in the event's time zone. Odoo takes
+        # it from the person creating the match; if they never set one, use the
+        # administrator's rather than UTC (which would be hours off).
+        admin = self.env.ref("base.user_admin", raise_if_not_found=False)
+        time_zone = self.env.user.tz or (admin and admin.tz) or "UTC"
         for match in matches:
-            match.event_id = Event.create({"name": match.name, "is_published": False, **match._event_values()})
+            match.event_id = Event.create({
+                "name": match.name, "is_published": False, "date_tz": time_zone, **match._event_values(),
+            })
         matches._sync_event()
         matches.filtered(lambda match: match.state != "scheduled")._sync_event_state()
         return matches

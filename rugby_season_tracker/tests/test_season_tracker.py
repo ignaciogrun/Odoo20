@@ -49,6 +49,14 @@ class TestSeasonTracker(TransactionCase):
         action = matches[0].action_open_match()
         self.assertEqual((action["res_model"], action["res_id"], action["target"]), ("rugby.match", matches[0].id, "current"))
 
+    def test_event_time_zone_falls_back_to_the_administrator(self):
+        self.env.ref("base.user_admin").tz = "America/New_York"
+        no_zone = new_test_user(self.env, login="nozone", groups="base.group_user", tz=False)
+        match = self.env["rugby.match"].with_user(no_zone).create({
+            "season_id": self.season.id, "opponent": "Daytona", "kickoff": self.kickoff,
+        })
+        self.assertEqual(match.sudo().event_id.date_tz, "America/New_York")
+
     def test_away_matches_list_the_home_side_first(self):
         self.assertEqual(self.make_match(home_away="away").name, "Tampa Bay vs Orlando Test XV")
 
@@ -77,12 +85,29 @@ class TestSeasonTracker(TransactionCase):
         self.assertEqual(event.with_context(lang="en_US").name, "Orlando Test XV vs Jacksonville")
         self.assertEqual(event.with_context(lang="es_419").name, "Orlando Test XV vs Jacksonville")
 
-    def test_show_on_website_publishes_the_event(self):
+    def test_show_result_leaves_the_event_alone(self):
         match = self.make_match()
-        match.event_published = True
+        match.show_result = True
+        self.assertFalse(match.event_id.is_published, "events are published in Events, not by this switch")
+        match.event_id.is_published = True
+        match.show_result = False
         self.assertTrue(match.event_id.is_published)
-        match.event_published = False
-        self.assertFalse(match.event_id.is_published)
+
+    def test_events_carry_their_team_tag(self):
+        match = self.make_match()
+        tag = self.team.event_tag_id
+        self.assertEqual(tag.name, "Orlando Test XV")
+        self.assertEqual(tag.category_id, self.env.ref("rugby_season_tracker.event_tag_category_teams"))
+        self.assertEqual(match.event_id.tag_ids, tag)
+        self.team.name = "Orlando Test 7s"
+        self.assertEqual(tag.name, "Orlando Test 7s", "the tag follows the team name")
+        # Moving the match to another team's season swaps the team tag but keeps other tags.
+        other_tag = self.env["event.tag"].create({"name": "Derby", "category_id": tag.category_id.id})
+        match.event_id.tag_ids |= other_tag
+        women = self.env["rugby.team"].create({"name": "Orlando Test Women"})
+        women_season = self.env["rugby.season"].create({"name": "Fall 2026", "team_id": women.id})
+        match.season_id = women_season
+        self.assertEqual(match.event_id.tag_ids, women.event_tag_id | other_tag)
 
     def test_cancelling_hides_the_event_and_rescheduling_brings_it_back(self):
         match = self.make_match()
@@ -117,11 +142,11 @@ class TestSeasonTracker(TransactionCase):
         match = self.make_match().with_user(coach)
         match = match.create({"season_id": self.season.id, "opponent": "Sarasota", "kickoff": self.kickoff})
         match.write({"opponent": "Naples"})
-        match.event_published = True
+        match.show_result = True
         match.action_mark_played()
         event = match.sudo().event_id
         self.assertEqual(event.name, "Orlando Test XV vs Naples")
-        self.assertTrue(event.is_published)
+        self.assertEqual(event.tag_ids, self.team.event_tag_id)
         match.unlink()
         self.assertFalse(event.exists())
 

@@ -1,0 +1,96 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* rugby_season_tracker
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-09 16:40+0000\n"
+"PO-Revision-Date: 2026-11-09 16:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: rugby_season_tracker
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "<strong>Points against</strong>"
+msgstr "<strong>Puntos en contra</strong>"
+
+#. module: rugby_season_tracker
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "<strong>Points for</strong>"
+msgstr "<strong>Puntos a favor</strong>"
+
+#. module: rugby_season_tracker
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "<strong>Record</strong>"
+msgstr "<strong>Récord</strong>"
+
+#. module: rugby_season_tracker
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Date"
+msgstr "Fecha"
+
+#. module: rugby_season_tracker
+#. odoo-python
+#: code:addons/rugby_season_tracker/models/rugby_match.py:0
+#: model:ir.model.fields.selection,name:rugby_season_tracker.selection__rugby_match__result__draw
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.rugby_match_view_form
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Draw"
+msgstr "Empate"
+
+#. module: rugby_season_tracker
+#: model:ir.model.fields.selection,name:rugby_season_tracker.selection__rugby_match__result__loss
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.rugby_match_view_form
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Loss"
+msgstr "Derrota"
+
+#. module: rugby_season_tracker
+#: model:ir.model.fields,field_description:rugby_season_tracker.field_rugby_match_player__match_id
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.rugby_match_view_form
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Match"
+msgstr "Partido"
+
+#. module: rugby_season_tracker
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "No results yet this season."
+msgstr "Aún no hay resultados esta temporada."
+
+#. module: rugby_season_tracker
+#: model:ir.model.fields,field_description:rugby_season_tracker.field_rugby_match__result
+#: model:ir.model.fields,field_description:rugby_season_tracker.field_rugby_match_player__result
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.rugby_match_view_form
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.rugby_match_view_search
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Result"
+msgstr "Resultado"
+
+#. module: rugby_season_tracker
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Results"
+msgstr "Resultados"
+
+#. module: rugby_season_tracker
+#: model:ir.model.fields,field_description:rugby_season_tracker.field_rugby_match__score_display
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Score"
+msgstr "Marcador"
+
+#. module: rugby_season_tracker
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Watch"
+msgstr "Ver"
+
+#. module: rugby_season_tracker
+#: model:ir.model.fields.selection,name:rugby_season_tracker.selection__rugby_match__result__win
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.rugby_match_view_form
+#: model_terms:ir.ui.view,arch_db:rugby_season_tracker.team_page
+msgid "Win"
+msgstr "Victoria"
