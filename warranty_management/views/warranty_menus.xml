@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_warranty_root" name="Warranties" sequence="45"
+        action="action_warranty"
+        web_icon="warranty_management,static/description/icon.png"
+        groups="base.group_user"/>
+    <menuitem id="menu_warranty_all" name="Warranties" sequence="10"
+        parent="menu_warranty_root" action="action_warranty"/>
+</odoo>

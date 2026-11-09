@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="account_financial_statements.FinancialStatement">
+        <div class="o_action">
+            <div class="o_fs">
+                <header class="o_fs_header">
+                    <div class="o_fs_title">
+                        <h3 class="mb-0" t-out="this.state.data?.title"/>
+                        <small class="text-muted" t-out="this.state.data?.company"/>
+                    </div>
+                    <div class="o_fs_exports">
+                        <button type="button" class="btn btn-secondary o_fs_pdf" t-on-click="() => this.exportFile('pdf')">
+                            <i class="oi me-1" data-icon="download"/>PDF
+                        </button>
+                        <button type="button" class="btn btn-secondary o_fs_xlsx" t-on-click="() => this.exportFile('xlsx')">
+                            <i class="oi me-1" data-icon="download"/>Excel
+                        </button>
+                    </div>
+                </header>
+
+                <div class="o_fs_filters">
+                    <label class="o_fs_filter">
+                        <span>Period</span>
+                        <select class="form-select form-select-sm o_fs_preset" t-on-change="(ev) => this.onPresetChange(ev)">
+                            <option t-foreach="this.presets()" t-as="preset" t-key="preset.id"
+                                t-att-value="preset.id" t-att-selected="this.state.preset === preset.id"
+                                t-out="preset.label"/>
+                            <option value="custom" t-att-selected="this.state.preset === 'custom'">Custom dates</option>
+                        </select>
+                    </label>
+                    <label t-if="!this.isAsOfReport()" class="o_fs_filter">
+                        <span>From</span>
+                        <input type="date" class="form-control form-control-sm o_fs_date_from"
+                            t-att-value="this.state.options.date_from" t-on-change="(ev) => this.onDateChange('date_from', ev)"/>
+                    </label>
+                    <label class="o_fs_filter">
+                        <span t-out="this.isAsOfReport() ? 'As of' : 'To'"/>
+                        <input type="date" class="form-control form-control-sm o_fs_date_to"
+                            t-att-value="this.state.options.date_to" t-on-change="(ev) => this.onDateChange('date_to', ev)"/>
+                    </label>
+                    <label t-if="this.isComparable()" class="o_fs_filter">
+                        <span>Compare with</span>
+                        <select class="form-select form-select-sm o_fs_compare" t-on-change="(ev) => this.onCompareChange(ev)">
+                            <option t-foreach="this.compareOptions" t-as="option" t-key="option.id"
+                                t-att-value="option.id" t-att-selected="this.state.options.compare === option.id"
+                                t-out="option.label"/>
+                        </select>
+                    </label>
+                    <div class="o_fs_filter">
+                        <span>Journals</span>
+                        <Dropdown>
+                            <button type="button" class="btn btn-secondary btn-sm o_fs_journals" t-out="this.journalLabel()"/>
+                            <t t-set-slot="content">
+                                <DropdownItem t-foreach="this.state.filters.journals" t-as="journal" t-key="journal.id"
+                                    closingMode="'none'" onSelected="() => this.toggleJournal(journal)">
+                                    <i class="oi me-2" t-att-data-icon="this.state.options.journal_ids.includes(journal.id) ? 'check' : 'remove'"
+                                        t-att-class="this.state.options.journal_ids.includes(journal.id) ? '' : 'invisible'"/>
+                                    <t t-out="journal.name"/>
+                                </DropdownItem>
+                            </t>
+                        </Dropdown>
+                    </div>
+                    <label class="o_fs_check">
+                        <input type="checkbox" class="form-check-input o_fs_include_draft"
+                            t-att-checked="this.state.options.include_draft" t-on-change="() => this.toggleOption('include_draft')"/>
+                        <span>Include draft entries</span>
+                    </label>
+                    <label class="o_fs_check">
+                        <input type="checkbox" class="form-check-input o_fs_hide_zero"
+                            t-att-checked="this.state.options.hide_zero" t-on-change="() => this.toggleOption('hide_zero')"/>
+                        <span>Hide zero balances</span>
+                    </label>
+                </div>
+
+                <div t-if="this.state.options.include_draft" class="alert alert-warning o_fs_alert mb-0" role="status">
+                    These figures include draft entries, which are not final.
+                </div>
+                <div t-foreach="this.failedChecks()" t-as="check" t-key="check_index"
+                    class="alert alert-danger o_fs_alert o_fs_check_failed mb-0" role="alert">
+                    <strong>This report does not add up.</strong>
+                    Check failed: <t t-out="check.label"/>
+                    Difference: <t t-out="check.difference"/>.
+                </div>
+
+                <div class="o_fs_content" t-att-class="{ o_fs_busy: this.state.loading }">
+                    <table t-if="this.state.data" class="table table-sm table-hover o_fs_table">
+                        <thead>
+                            <tr>
+                                <th class="o_fs_name">Name</th>
+                                <th t-foreach="this.state.data.columns" t-as="column" t-key="column.key"
+                                    t-att-class="column.type === 'text' ? '' : 'text-end'"
+                                    t-out="column.label"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="this.visibleRows()" t-as="row" t-key="row.id"
+                                t-attf-class="o_fs_row o_fs_row_{{ row.style }}"
+                                t-att-data-row-id="row.id">
+                                <t t-if="row.style === 'more'">
+                                    <td t-att-colspan="this.state.data.columns.length + 1" class="text-center">
+                                        <button type="button" class="btn btn-link btn-sm o_fs_more"
+                                            t-on-click="() => this.loadLedgerLines(row.owner)">Show more lines</button>
+                                    </td>
+                                </t>
+                                <t t-else="">
+                                    <td class="o_fs_name" t-att-style="'padding-left: ' + (row.level * 18 + 6) + 'px'">
+                                        <button t-if="this.hasChildren(row)" type="button" class="btn btn-link p-0 o_fs_toggle"
+                                            t-att-aria-expanded="!!this.state.expanded[row.id]" t-att-aria-label="'Show or hide ' + row.label"
+                                            t-on-click="() => this.toggleRow(row)">
+                                            <i class="oi" t-att-data-icon="this.state.expanded[row.id] ? 'expand_more' : 'chevron_right'"/>
+                                            <span t-out="row.label"/>
+                                        </button>
+                                        <a t-elif="row.move_id" href="#" class="o_fs_entry"
+                                            t-on-click.prevent="() => this.openEntry(row)" t-out="row.label or 'Open entry'"/>
+                                        <span t-else="" t-out="row.label"/>
+                                    </td>
+                                    <td t-foreach="this.state.data.columns" t-as="column" t-key="column.key"
+                                        t-att-class="{
+                                            'text-end': column.type !== 'text',
+                                            'text-nowrap': column.type !== 'text',
+                                            'text-danger': this.isNegative(row, column),
+                                        }">
+                                        <a t-if="this.canOpen(row, column)" href="#" class="o_fs_amount"
+                                            title="See the journal items behind this figure"
+                                            t-att-class="this.isNegative(row, column) ? 'text-danger' : ''"
+                                            t-on-click.prevent="() => this.openItems(row, column)"
+                                            t-out="this.formatCell(row, column)"/>
+                                        <t t-else="" t-out="this.formatCell(row, column)"/>
+                                    </td>
+                                </t>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p t-if="this.passedChecks().length" class="text-muted small o_fs_passed">
+                        <i class="oi me-1 text-success" data-icon="check_circle"/>
+                        <t t-foreach="this.passedChecks()" t-as="check" t-key="check_index"><t t-out="check.label"/><t t-out="' '"/></t>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

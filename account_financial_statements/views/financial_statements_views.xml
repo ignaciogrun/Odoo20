@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_balance_sheet" model="ir.actions.client">
+        <field name="name">Balance Sheet</field>
+        <field name="tag">account_financial_statements.report</field>
+        <field name="path">balance-sheet</field>
+        <field name="params" eval="{'report': 'balance_sheet'}"/>
+    </record>
+    <record id="action_profit_and_loss" model="ir.actions.client">
+        <field name="name">Profit and Loss</field>
+        <field name="tag">account_financial_statements.report</field>
+        <field name="path">profit-and-loss</field>
+        <field name="params" eval="{'report': 'profit_and_loss'}"/>
+    </record>
+    <record id="action_trial_balance" model="ir.actions.client">
+        <field name="name">Trial Balance</field>
+        <field name="tag">account_financial_statements.report</field>
+        <field name="path">trial-balance</field>
+        <field name="params" eval="{'report': 'trial_balance'}"/>
+    </record>
+    <record id="action_general_ledger" model="ir.actions.client">
+        <field name="name">General Ledger</field>
+        <field name="tag">account_financial_statements.report</field>
+        <field name="path">general-ledger</field>
+        <field name="params" eval="{'report': 'general_ledger'}"/>
+    </record>
+    <record id="action_aged_receivable" model="ir.actions.client">
+        <field name="name">Aged Receivable</field>
+        <field name="tag">account_financial_statements.report</field>
+        <field name="path">aged-receivable</field>
+        <field name="params" eval="{'report': 'aged_receivable'}"/>
+    </record>
+    <record id="action_aged_payable" model="ir.actions.client">
+        <field name="name">Aged Payable</field>
+        <field name="tag">account_financial_statements.report</field>
+        <field name="path">aged-payable</field>
+        <field name="params" eval="{'report': 'aged_payable'}"/>
+    </record>
+
+    <!-- Not under Odoo's own "Statement Reports" menu: it is hidden from the Invoicing
+         administrator, which is the only accounting role a new database's admin has. -->
+    <menuitem id="menu_financial_statements" name="Financial Statements" sequence="1"
+        parent="account.menu_finance_reports"
+        groups="account.group_account_readonly,account.group_account_manager"/>
+    <menuitem id="menu_balance_sheet" name="Balance Sheet" sequence="10"
+        parent="menu_financial_statements" action="action_balance_sheet"/>
+    <menuitem id="menu_profit_and_loss" name="Profit and Loss" sequence="20"
+        parent="menu_financial_statements" action="action_profit_and_loss"/>
+    <menuitem id="menu_audit_reports" name="Audit Reports" sequence="2"
+        parent="account.menu_finance_reports"
+        groups="account.group_account_readonly,account.group_account_manager"/>
+    <menuitem id="menu_trial_balance" name="Trial Balance" sequence="10"
+        parent="menu_audit_reports" action="action_trial_balance"/>
+    <menuitem id="menu_general_ledger" name="General Ledger" sequence="20"
+        parent="menu_audit_reports" action="action_general_ledger"/>
+    <menuitem id="menu_aged_receivable" name="Aged Receivable" sequence="10"
+        parent="account.account_reports_partners_reports_menu" action="action_aged_receivable"
+        groups="account.group_account_readonly,account.group_account_manager"/>
+    <menuitem id="menu_aged_payable" name="Aged Payable" sequence="20"
+        parent="account.account_reports_partners_reports_menu" action="action_aged_payable"
+        groups="account.group_account_readonly,account.group_account_manager"/>
+</odoo>

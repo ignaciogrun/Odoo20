@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_financial_statement">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <h2 t-out="statement['title']"/>
+                    <p>
+                        <strong t-out="statement['company']"/><br/>
+                        <span t-out="subtitle"/>
+                    </p>
+                    <table class="table table-sm" style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th t-foreach="statement['columns']" t-as="column"
+                                    t-att-class="'' if column['type'] == 'text' else 'text-end'"
+                                    t-out="column['label']"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="statement['rows']" t-as="row"
+                                t-att-style="'font-weight: bold;' if row['style'] in ('grand', 'section') else ''">
+                                <td t-attf-style="padding-left: #{row['level'] * 14 + 4}px;" t-out="row['label']"/>
+                                <td t-foreach="zip(statement['columns'], row['cells'])" t-as="pair"
+                                    t-att-class="'' if pair[0]['type'] == 'text' else 'text-end text-nowrap'"
+                                    t-out="pair[1]"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_financial_statement" model="report.paperformat">
+        <field name="name">Financial Statement (Landscape)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_spacing">10</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_financial_statement_pdf" model="ir.actions.report">
+        <field name="name">Financial Statement</field>
+        <field name="model">account.financial.statements</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">account_financial_statements.report_financial_statement</field>
+        <field name="print_report_name">'Financial Statement'</field>
+        <field name="paperformat_id" ref="paperformat_financial_statement"/>
+    </record>
+</odoo>

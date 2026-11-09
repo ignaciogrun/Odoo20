@@ -1,0 +1,29 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #111;
+}
+
+/* Exactly the size of the playing field, and clips everything else on the page: without
+   this, a frame taller than the field would show the name of the play above it. */
+#field {
+    position: absolute;
+    overflow: hidden;
+    background: #4fa862;
+}
+
+/* Fixed size, so that the field is always in the same place: see player.js. */
+#play {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1200px;
+    height: 800px;
+    border: 0;
+    /* Nothing on the page is meant to be clicked: no links away from the lesson. */
+    pointer-events: none;
+    transform-origin: 0 0;
+}

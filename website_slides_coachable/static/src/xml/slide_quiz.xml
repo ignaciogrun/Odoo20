@@ -10,4 +10,12 @@
             </div>
         </xpath>
     </t>
+
+    <!-- Odoo 20 finds this by name, from the video source of the lesson. Odoo 19
+         uses its generic video template instead, and ignores this one. -->
+    <t t-name="website.slides.fullscreen.video.coachable">
+        <div class="player ratio ratio-16x9 embed-responsive-item h-100">
+            <iframe t-att-src="slide.embedUrl" title="Play animation" allowFullScreen="true" frameborder="0"/>
+        </div>
+    </t>
 </templates>
