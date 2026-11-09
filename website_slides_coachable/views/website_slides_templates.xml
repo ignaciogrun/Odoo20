@@ -9,4 +9,24 @@
             </div>
         </xpath>
     </template>
+
+    <template id="player_page" name="Coachable: cropped play player">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Play animation</title>
+                <link rel="stylesheet" href="/website_slides_coachable/static/player/player.css"/>
+            </head>
+            <body>
+                <div id="field">
+                    <iframe id="play" t-att-src="play_url" title="Play animation" tabindex="-1"
+                        scrolling="no" referrerpolicy="no-referrer"
+                        sandbox="allow-scripts allow-same-origin"/>
+                </div>
+                <script src="/website_slides_coachable/static/player/player.js"/>
+            </body>
+        </html>
+    </template>
 </odoo>

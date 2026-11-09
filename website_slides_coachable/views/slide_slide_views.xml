@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_slide_slide_form" model="ir.ui.view">
+        <field name="name">slide.slide.form.coachable</field>
+        <field name="model">slide.slide</field>
+        <field name="inherit_id" ref="website_slides.view_slide_slide_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='video_url']" position="after">
+                <field name="coachable_preview" nolabel="1" colspan="2" readonly="1"
+                    invisible="not coachable_preview"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

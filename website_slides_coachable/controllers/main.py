@@ -1,10 +1,32 @@
+from werkzeug.exceptions import NotFound
+
 from odoo import http
 from odoo.http import request
 
 from odoo.addons.website_slides.controllers.main import WebsiteSlides
 
+from ..models.coachable import is_coachable_url
+
 
 class WebsiteSlidesCoachable(WebsiteSlides):
+    @http.route(
+        "/website_slides_coachable/player/<int:slide_id>",
+        type="http", auth="public", website=True, methods=["GET"], sitemap=False,
+    )
+    def coachable_player(self, slide_id, **kwargs):
+        """Page holding the cropped animation of a video lesson, shown inside a frame."""
+        fetch_result = self._fetch_slide(slide_id)
+        slide = fetch_result.get("slide")
+        if not slide or slide.slide_category != "video" or not is_coachable_url(slide.video_url):
+            raise NotFound()
+        channel = slide.channel_id
+        # The same rule the lesson pages use to decide who may see the content.
+        if not (slide.is_preview or channel.is_member or channel.can_publish):
+            raise NotFound()
+        return request.render("website_slides_coachable.player_page", {
+            "play_url": slide.video_url.strip(),
+        })
+
     def _get_slide_quiz_data(self, slide):
         values = super()._get_slide_quiz_data(slide)
         links = {question.id: question.coachable_url for question in slide.question_ids}

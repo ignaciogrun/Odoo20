@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Runs every hour so cards move soon after midnight. It runs as the
+             administrator so "today" follows the administrator's time zone. -->
+        <record id="ir_cron_update_state" model="ir.cron" forcecreate="True">
+            <field name="name">Warranties: Move Cards as Days Pass</field>
+            <field name="model_id" ref="model_warranty_warranty"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_update_state()</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+        </record>
+    </data>
+</odoo>

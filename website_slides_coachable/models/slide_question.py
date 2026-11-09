@@ -1,13 +1,7 @@
-import re
-
-from markupsafe import Markup
-
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-# Only Coachable's shared plays can be embedded: this address ends up as the source
-# of a frame on the quiz page, so it must not be able to point anywhere else.
-COACHABLE_URL = re.compile(r"https://(www\.)?coachableplays\.com/shared/[A-Za-z0-9_-]+/?")
+from .coachable import COACHABLE_URL, coachable_frame
 
 
 class SlideQuestion(models.Model):
@@ -25,16 +19,7 @@ class SlideQuestion(models.Model):
     @api.depends("coachable_url")
     def _compute_coachable_preview(self):
         for question in self:
-            url = (question.coachable_url or "").strip()
-            question.coachable_preview = (
-                Markup(
-                    '<div class="o_wslides_coachable_frame o_wslides_coachable_frame_small">'
-                    '<iframe src="{}" title="Play animation" tabindex="-1" scrolling="no" '
-                    'loading="lazy" referrerpolicy="no-referrer" '
-                    'sandbox="allow-scripts allow-same-origin"></iframe></div>'
-                ).format(url)
-                if COACHABLE_URL.fullmatch(url) else False
-            )
+            question.coachable_preview = coachable_frame(question.coachable_url, small=True)
 
     @api.constrains("coachable_url")
     def _check_coachable_url(self):
