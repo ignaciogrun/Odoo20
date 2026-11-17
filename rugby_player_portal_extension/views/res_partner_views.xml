@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_social_tagging" model="ir.ui.view">
+        <field name="name">res.partner.form.social.tagging</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="social_tagging" invisible="is_company" placeholder="Not answered yet: don't tag"
+                    decoration-success="social_tagging == 'yes'" decoration-danger="social_tagging == 'no'"/>
+                <field name="social_handle" widget="CopyClipboardChar" placeholder="@jane.doe"
+                    invisible="social_tagging != 'yes'" required="social_tagging == 'yes'"/>
+                <field name="social_tagging_date" invisible="not social_tagging_date"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_list_social_tagging" model="ir.ui.view">
+        <field name="name">res.partner.list.social.tagging</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="social_tagging" string="Tagging" optional="show" widget="badge"
+                    decoration-success="social_tagging == 'yes'" decoration-danger="social_tagging == 'no'"/>
+                <field name="social_handle" string="Handle" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_kanban_view_social_tagging" model="ir.ui.view">
+        <field name="name">res.partner.kanban.social.tagging</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban/field[@name='name']" position="after">
+                <field name="social_tagging"/>
+            </xpath>
+            <xpath expr="//div[@t-if='record.phone.raw_value']" position="after">
+                <div t-if="record.social_tagging.raw_value == 'yes'" class="text-truncate text-success o_social_tag_yes">
+                    <i class="oi oi-fw me-1" data-icon="alternate_email" title="Can be tagged"/>
+                    <field name="social_handle"/>
+                </div>
+                <div t-elif="record.social_tagging.raw_value == 'no'" class="text-danger o_social_tag_no">
+                    <i class="oi oi-fw me-1" data-icon="block" title="Social media tagging"/>
+                    <span>Don't tag</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_social_tagging" model="ir.ui.view">
+        <field name="name">res.partner.search.social.tagging</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="before">
+                <field name="social_handle"/>
+            </xpath>
+            <xpath expr="//filter[@name='inactive']" position="before">
+                <filter string="Can Tag" name="social_can_tag" domain="[('social_tagging', '=', 'yes')]"/>
+                <filter string="Don't Tag" name="social_do_not_tag" domain="[('social_tagging', '=', 'no')]"/>
+                <filter string="Tagging Not Answered" name="social_not_answered"
+                    domain="[('social_tagging', '=', False), ('is_company', '=', False)]"/>
+                <separator/>
+            </xpath>
+            <xpath expr="//filter[@name='group_country']" position="after">
+                <filter string="Social Media Tagging" name="group_social_tagging" context="{'group_by': 'social_tagging'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

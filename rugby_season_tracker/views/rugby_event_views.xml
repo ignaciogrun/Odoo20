@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Event log ======================================================= -->
+    <record id="rugby_match_event_view_list" model="ir.ui.view">
+        <field name="name">rugby.match.event.list</field>
+        <field name="model">rugby.match.event</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="match_id, sequence, id"
+                  decoration-muted="side == 'opp'">
+                <field name="sequence" widget="handle"/>
+                <field name="match_id" optional="hide"/>
+                <field name="half"/>
+                <field name="video_time" placeholder="3:04"/>
+                <field name="video_url" widget="url" text="Watch" nolabel="1" optional="show"/>
+                <field name="side"/>
+                <field name="jersey_number"/>
+                <field name="player_id" optional="show"/>
+                <field name="event_type_id" options="{'no_create': True}"/>
+                <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+                <field name="quality" widget="badge" optional="show"
+                    decoration-success="quality == 'positive'" decoration-danger="quality == 'negative'"/>
+                <field name="detail" column_invisible="True"/>
+                <field name="carry_meters" invisible="detail != 'carry'" optional="show"/>
+                <field name="kick_meters" invisible="detail != 'kick'" optional="show"/>
+                <field name="offence_id" invisible="detail != 'offence'" options="{'no_create': True}" optional="show"/>
+                <field name="try_source_id" invisible="detail != 'try'" options="{'no_create': True}" optional="show"/>
+                <field name="try_origin_id" invisible="detail != 'try'" options="{'no_create': True}" optional="show"/>
+                <field name="try_location_id" invisible="detail != 'try'" options="{'no_create': True}" optional="show"/>
+                <field name="buildup_rucks" invisible="detail != 'try'" optional="show"/>
+                <field name="buildup_passes" invisible="detail != 'try'" optional="show"/>
+                <field name="lineout_numbers" invisible="detail != 'lineout'" optional="show"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="rugby_match_event_view_pivot" model="ir.ui.view">
+        <field name="name">rugby.match.event.pivot</field>
+        <field name="model">rugby.match.event</field>
+        <field name="arch" type="xml">
+            <pivot string="Event Analysis" sample="1">
+                <field name="event_type_id" type="row"/>
+                <field name="half" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="rugby_match_event_view_graph" model="ir.ui.view">
+        <field name="name">rugby.match.event.graph</field>
+        <field name="model">rugby.match.event</field>
+        <field name="arch" type="xml">
+            <graph string="Event Analysis" type="bar" order="desc" sample="1">
+                <field name="event_type_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="rugby_match_event_view_search" model="ir.ui.view">
+        <field name="name">rugby.match.event.search</field>
+        <field name="model">rugby.match.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="event_type_id"/>
+                <field name="category_ids"/>
+                <field name="player_id"/>
+                <field name="jersey_number"/>
+                <field name="match_id"/>
+                <field name="season_id"/>
+                <field name="team_id"/>
+                <field name="notes"/>
+                <filter name="own" string="Own Team" domain="[('side', '=', 'own')]"/>
+                <filter name="opp" string="Opposition" domain="[('side', '=', 'opp')]"/>
+                <separator/>
+                <filter name="first_half" string="1st Half" domain="[('half', '=', '1')]"/>
+                <filter name="second_half" string="2nd Half" domain="[('half', '=', '2')]"/>
+                <separator/>
+                <filter name="positive" string="Positive" domain="[('quality', '=', 'positive')]"/>
+                <filter name="negative" string="Negative" domain="[('quality', '=', 'negative')]"/>
+                <separator/>
+                <filter name="with_notes" string="With Notes" domain="[('notes', '!=', False)]"/>
+                <filter name="group_type" string="Event" context="{'group_by': 'event_type_id'}"/>
+                <filter name="group_category" string="Category" context="{'group_by': 'category_ids'}"/>
+                <filter name="group_player" string="Player" context="{'group_by': 'player_id'}"/>
+                <filter name="group_half" string="Half" context="{'group_by': 'half'}"/>
+                <filter name="group_side" string="Team (Own or Opp)" context="{'group_by': 'side'}"/>
+                <filter name="group_quality" string="Quality" context="{'group_by': 'quality'}"/>
+                <filter name="group_offence" string="Offence Detail" context="{'group_by': 'offence_id'}"/>
+                <filter name="group_try_source" string="Try Source" context="{'group_by': 'try_source_id'}"/>
+                <filter name="group_match" string="Match" context="{'group_by': 'match_id'}"/>
+                <filter name="group_season" string="Season" context="{'group_by': 'season_id'}"/>
+                <filter name="group_club_team" string="Club Team" context="{'group_by': 'team_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rugby_match_event" model="ir.actions.act_window">
+        <field name="name">Event Analysis</field>
+        <field name="res_model">rugby.match.event</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="path">match-events</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No events logged yet</p>
+            <p>Open a match and use its Event Log tab: one row per event from the match video. You can also import a coded film-review Excel sheet there.</p>
+        </field>
+    </record>
+
+    <record id="action_rugby_match_event_analysis" model="ir.actions.act_window">
+        <field name="name">Event Analysis</field>
+        <field name="res_model">rugby.match.event</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="path">event-analysis</field>
+        <field name="context">{'search_default_own': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No events logged yet</p>
+            <p>Events come from each match's Event Log tab.</p>
+        </field>
+    </record>
+
+    <!-- Lists ============================================================ -->
+    <record id="rugby_event_type_view_list" model="ir.ui.view">
+        <field name="name">rugby.event.type.list</field>
+        <field name="model">rugby.event.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="detail" optional="show"/>
+                <field name="points" optional="show"/>
+                <field name="definition" optional="show"/>
+                <field name="code" optional="hide"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="rugby_event_type_view_search" model="ir.ui.view">
+        <field name="name">rugby.event.type.search</field>
+        <field name="model">rugby.event.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_ids"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <filter name="group_category" string="Category" context="{'group_by': 'category_ids'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rugby_event_type" model="ir.actions.act_window">
+        <field name="name">Event Types</field>
+        <field name="res_model">rugby.event.type</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="rugby_event_category_view_list" model="ir.ui.view">
+        <field name="name">rugby.event.category.list</field>
+        <field name="model">rugby.event.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_rugby_event_category" model="ir.actions.act_window">
+        <field name="name">Event Categories</field>
+        <field name="res_model">rugby.event.category</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="rugby_event_option_view_list" model="ir.ui.view">
+        <field name="name">rugby.event.option.list</field>
+        <field name="model">rugby.event.option</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="kind"/>
+                <field name="name"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="rugby_event_option_view_search" model="ir.ui.view">
+        <field name="name">rugby.event.option.search</field>
+        <field name="model">rugby.event.option</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="group_kind" string="List" context="{'group_by': 'kind'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rugby_event_option" model="ir.actions.act_window">
+        <field name="name">Event Detail Lists</field>
+        <field name="res_model">rugby.event.option</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_group_kind': 1}</field>
+    </record>
+
+    <!-- Import =========================================================== -->
+    <record id="rugby_event_import_view_form" model="ir.ui.view">
+        <field name="name">rugby.event.import.form</field>
+        <field name="model">rugby.event.import</field>
+        <field name="arch" type="xml">
+            <form string="Import Event Log">
+                <p class="text-muted">
+                    Choose the film-review coding workbook (.xlsx) for this match. Its "Event Log" tab is read row by row.
+                </p>
+                <group>
+                    <field name="match_id" readonly="1"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="file" filename="filename"/>
+                    <field name="replace"/>
+                    <field name="fill_lineup"/>
+                </group>
+                <footer>
+                    <button name="action_import" string="Import" type="object" class="btn-primary"/>
+                    <button string="Discard" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_rugby_event_import" model="ir.actions.act_window">
+        <field name="name">Import Event Log</field>
+        <field name="res_model">rugby.event.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Match summary, shown on the match's Match Summary tab ============ -->
+    <template id="match_summary" name="Match Summary">
+        <div class="o_rugby_summary_tab">
+            <div>
+                <div>
+                    <h3 class="h5">Key rates</h3>
+                    <table class="table table-sm align-middle">
+                        <thead><tr>
+                            <th>Key rate</th>
+                            <th class="text-end text-nowrap" t-out="own_name"/>
+                            <th class="text-end text-nowrap" t-out="opp_name"/>
+                            <th class="text-muted fw-normal">How it is calculated</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr t-foreach="key_rates" t-as="row">
+                                <td t-out="row['label']"/>
+                                <td class="text-end fw-bold" t-out="pct(row['own']) if row['percent'] else num(row['own'])"/>
+                                <td class="text-end" t-out="pct(row['opp']) if row['percent'] else num(row['opp'])"/>
+                                <td class="text-muted small" t-out="row['how']"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 class="h5 mt-4">Totals</h3>
+                    <table class="table table-sm align-middle">
+                        <thead><tr>
+                            <th>World Rugby derived totals</th>
+                            <th class="text-end text-nowrap" t-out="own_name"/>
+                            <th class="text-end text-nowrap" t-out="opp_name"/>
+                            <th class="text-end">Both teams</th>
+                            <th class="text-muted fw-normal">How it is calculated</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr t-foreach="totals" t-as="row">
+                                <td t-out="row['label']"/>
+                                <td class="text-end fw-bold" t-out="num(row['own'])"/>
+                                <td class="text-end" t-out="num(row['opp'])"/>
+                                <td class="text-end" t-out="num(row['both'])"/>
+                                <td class="text-muted small" t-out="row['how']"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 class="h5 mt-4">Events by half</h3>
+                    <table class="table table-sm align-middle">
+                        <thead><tr>
+                            <th>Event</th>
+                            <th class="text-end">Own 1st half</th>
+                            <th class="text-end">Own 2nd half</th>
+                            <th class="text-end">Own total</th>
+                            <th class="text-end">Opp total</th>
+                        </tr></thead>
+                        <tbody>
+                            <t t-foreach="counts" t-as="row">
+                                <tr t-if="'heading' in row" class="table-light">
+                                    <th colspan="5" class="small text-uppercase" t-out="row['heading'] or 'Other'"/>
+                                </tr>
+                                <tr t-else="" t-att-class="'text-muted' if not (row['own'] or row['opp']) else ''">
+                                    <td t-out="row['name']"/>
+                                    <td class="text-end" t-out="row['own_1']"/>
+                                    <td class="text-end" t-out="row['own_2']"/>
+                                    <td class="text-end fw-bold" t-out="row['own']"/>
+                                    <td class="text-end" t-out="row['opp']"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex flex-wrap column-gap-5 mt-3">
+                    <div style="min-width: 17rem; flex: 1 1 17rem; max-width: 26rem;">
+                        <h3 class="h5 mt-3">Own tries by source</h3>
+                        <table class="table table-sm align-middle">
+                            <tbody>
+                                <tr t-foreach="tries_by_source" t-as="row" t-att-class="'text-muted' if not row['count'] else ''">
+                                    <td t-out="row['name']"/>
+                                    <td class="text-end fw-bold" style="width: 4rem" t-out="row['count']"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="min-width: 17rem; flex: 1 1 17rem; max-width: 26rem;">
+                        <h3 class="h5 mt-3">Own tries by origin</h3>
+                        <table class="table table-sm align-middle">
+                            <tbody>
+                                <tr t-foreach="tries_by_origin" t-as="row" t-att-class="'text-muted' if not row['count'] else ''">
+                                    <td t-out="row['name']"/>
+                                    <td class="text-end fw-bold" style="width: 4rem" t-out="row['count']"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="min-width: 17rem; flex: 1 1 17rem; max-width: 26rem;">
+                        <h3 class="h5 mt-3">Own tries by location</h3>
+                        <table class="table table-sm align-middle">
+                            <tbody>
+                                <tr t-foreach="tries_by_location" t-as="row" t-att-class="'text-muted' if not row['count'] else ''">
+                                    <td t-out="row['name']"/>
+                                    <td class="text-end fw-bold" style="width: 4rem" t-out="row['count']"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="min-width: 17rem; flex: 1 1 17rem; max-width: 26rem;">
+                        <h3 class="h5 mt-3">Own lineouts by numbers</h3>
+                        <table class="table table-sm align-middle">
+                            <tbody>
+                                <tr t-foreach="lineouts_by_numbers" t-as="row" t-att-class="'text-muted' if not row['count'] else ''">
+                                    <td t-out="row['name']"/>
+                                    <td class="text-end fw-bold" style="width: 4rem" t-out="row['count']"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="min-width: 17rem; flex: 1 1 17rem; max-width: 26rem;">
+                        <h3 class="h5 mt-3">Own offences conceded by detail</h3>
+                        <table class="table table-sm align-middle">
+                            <tbody>
+                                <tr t-foreach="offences" t-as="row" t-att-class="'text-muted' if not row['count'] else ''">
+                                    <td t-out="row['name']"/>
+                                    <td class="text-end fw-bold" style="width: 4rem" t-out="row['count']"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

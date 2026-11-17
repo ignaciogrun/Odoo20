@@ -1,0 +1,258 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* rugby_player_portal_extension
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-17 17:12+0000\n"
+"PO-Revision-Date: 2026-11-17 17:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: rugby_player_portal_extension
+#: model:ir.module.module,description:base.module_rugby_player_portal_extension
+msgid ""
+"\n"
+"Adds a \"Can we tag you on social media?\" question to the portal's Account\n"
+"Details page. Answering Yes shows a box for the person's handle (for example\n"
+"@jane.doe). The answer and the handle are saved on the person's contact, so\n"
+"staff can filter contacts by who can and can't be tagged, and copy the handle\n"
+"when posting.\n"
+msgstr ""
+"\n"
+"Agrega la pregunta \"¿Podemos etiquetarte en redes sociales?\" a la página\n"
+"Detalles de la cuenta del portal. Al responder Sí aparece un campo para el\n"
+"usuario de la persona (por ejemplo @jane.doe). La respuesta y el usuario se\n"
+"guardan en el contacto, para que el personal pueda filtrar a quién se puede\n"
+"etiquetar y copiar el usuario al publicar.\n"
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/models/res_partner.py:0
+msgid ""
+"\"%s\" isn't a valid handle. Use letters, numbers, periods and underscores "
+"only (30 at most), for example @jane.doe."
+msgstr ""
+"\"%s\" no es un usuario válido. Usa solo letras, números, puntos y guiones "
+"bajos (30 como máximo), por ejemplo @jane.doe."
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/models/res_partner.py:0
+msgid ""
+"%s agreed to be tagged on social media: add their handle, for example "
+"@jane.doe."
+msgstr ""
+"%s aceptó que lo etiqueten en redes sociales: agrega su usuario, por ejemplo"
+" @jane.doe."
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.res_partner_kanban_view_social_tagging
+msgid "<i class=\"oi oi-fw me-1\" data-icon=\"alternate_email\" title=\"Can be tagged\"/>"
+msgstr ""
+"<i class=\"oi oi-fw me-1\" data-icon=\"alternate_email\" title=\"Se puede "
+"etiquetar\"/>"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.res_partner_kanban_view_social_tagging
+msgid ""
+"<i class=\"oi oi-fw me-1\" data-icon=\"block\" title=\"Social media tagging\"/>\n"
+"                    <span>Don't tag</span>"
+msgstr ""
+"<i class=\"oi oi-fw me-1\" data-icon=\"block\" title=\"Etiquetado en redes sociales\"/>\n"
+"                    <span>No etiquetar</span>"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid ""
+"<small class=\"form-text text-muted\">The account we should tag, for example"
+" on Instagram. You can change your answer here at any time.</small>"
+msgstr ""
+"<small class=\"form-text text-muted\">La cuenta que debemos etiquetar, por "
+"ejemplo en Instagram. Puedes cambiar tu respuesta aquí cuando "
+"quieras.</small>"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "<span class=\"input-group-text\">@</span>"
+msgstr "<span class=\"input-group-text\">@</span>"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_home_social_reminder
+msgid "<span>Can we tag you in our social media posts?</span>"
+msgstr ""
+"<span>¿Podemos etiquetarte en nuestras publicaciones en redes "
+"sociales?</span>"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_form_social_tagging
+msgid "@jane.doe"
+msgstr "@jane.doe"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_home_social_reminder
+msgid "Answer in Account Details"
+msgstr "Responder en Detalles de la cuenta"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields.selection,name:rugby_player_portal_extension.selection__res_partner__social_tagging__yes
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Can Tag"
+msgstr "Se puede etiquetar"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model,name:rugby_player_portal_extension.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Nombre para mostrar"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields.selection,name:rugby_player_portal_extension.selection__res_partner__social_tagging__no
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Don't Tag"
+msgstr "No etiquetar"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_list_social_tagging
+msgid "Handle"
+msgstr "Usuario"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__id
+msgid "ID"
+msgstr "ID"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "No, don't tag me"
+msgstr "No, no me etiqueten"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_form_social_tagging
+msgid "Not answered yet: don't tag"
+msgstr "Sin respuesta: no etiquetar"
+
+#. module: rugby_player_portal_extension
+#: model:ir.module.module,shortdesc:base.module_rugby_player_portal_extension
+msgid "Player Portal Extension"
+msgstr "Extensión del portal para jugadores"
+
+#. module: rugby_player_portal_extension
+#: model:ir.module.module,summary:base.module_rugby_player_portal_extension
+msgid "Providing enhanced portal features for rugby players"
+msgstr "Funciones adicionales del portal para jugadores de rugby"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__social_handle
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_users__social_handle
+msgid "Social Media Handle"
+msgstr "Usuario en redes sociales"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__social_tagging
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_users__social_tagging
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Social Media Tagging"
+msgstr "Etiquetado en redes sociales"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "Social media"
+msgstr "Redes sociales"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_list_social_tagging
+msgid "Tagging"
+msgstr "Etiquetado"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__social_tagging_date
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_users__social_tagging_date
+msgid "Tagging Answered On"
+msgstr "Respuesta de etiquetado el"
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Tagging Not Answered"
+msgstr "Etiquetado sin respuesta"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_partner__social_handle
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_users__social_handle
+msgid ""
+"The account to tag, for example @jane.doe. Only kept while tagging is "
+"allowed."
+msgstr ""
+"La cuenta que se etiqueta, por ejemplo @jane.doe. Solo se guarda mientras el"
+" etiquetado esté permitido."
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_partner__social_tagging
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_users__social_tagging
+msgid ""
+"The person's own answer to \"Can we tag you on social media?\". Empty means "
+"they haven't answered yet: don't tag them."
+msgstr ""
+"La respuesta de la propia persona a \"¿Podemos etiquetarte en redes "
+"sociales?\". Vacío significa que aún no respondió: no la etiquetes."
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid ""
+"We share photos and videos from matches and events on social media. Can we "
+"tag you in them?"
+msgstr ""
+"Compartimos fotos y videos de partidos y eventos en redes sociales. ¿Podemos"
+" etiquetarte en ellos?"
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_partner__social_tagging_date
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_users__social_tagging_date
+msgid "When the tagging answer was last given or changed."
+msgstr "Cuándo se dio o cambió por última vez la respuesta de etiquetado."
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "Yes, tag me"
+msgstr "Sí, etiquétenme"
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/controllers/portal.py:0
+msgid ""
+"You said we can tag you: please add your social media handle, for example "
+"@jane.doe."
+msgstr ""
+"Dijiste que podemos etiquetarte: agrega tu usuario de redes sociales, por "
+"ejemplo @jane.doe."
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "Your social media handle"
+msgstr "Tu usuario en redes sociales"
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/controllers/portal.py:0
+msgid ""
+"Your social media handle can only use letters, numbers, periods and "
+"underscores (30 at most), for example @jane.doe."
+msgstr ""
+"Tu usuario de redes sociales solo puede tener letras, números, puntos y "
+"guiones bajos (30 como máximo), por ejemplo @jane.doe."
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "jane.doe"
+msgstr "jane.doe"

@@ -1,0 +1,10 @@
+// The handle box only shows once "Yes, tag me" is picked. Done in CSS (:has), so
+// it works without any JavaScript and stays right when the page is reloaded.
+.o_social_tagging {
+    .o_social_handle {
+        display: none;
+    }
+    &:has(#o_social_tagging_yes:checked) .o_social_handle {
+        display: block;
+    }
+}

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="team_page" name="Team Schedule and Results">
+        <t t-call="website.layout">
+            <t t-set="additional_title" t-value="team.name"/>
+            <div id="wrap" class="o_rugby_team_page">
+                <section class="pt-5 pb-2">
+                    <div class="container">
+                        <h1 class="mb-0" t-out="team.name"/>
+                    </div>
+                </section>
+                <!-- This team's own block area, like a product page's description:
+                     drop in text, photos or an Event block filtered by the team's tag.
+                     Saved on the team, so each team's page has its own blocks. -->
+                <div t-field="team.website_description" class="oe_structure oe_empty o_rugby_team_blocks"/>
+
+                <section class="pt-4 pb-5">
+                    <div class="container">
+                        <h2 class="h3 mb-3">Results</h2>
+                        <ul t-if="len(seasons) &gt; 1" class="nav nav-pills mb-3">
+                            <li t-foreach="seasons" t-as="season" class="nav-item">
+                                <a t-attf-href="#{team.website_url}?season=#{season.id}"
+                                    t-attf-class="nav-link #{'active' if season == selected_season else ''}"
+                                    t-out="season.name"/>
+                            </li>
+                        </ul>
+                        <p t-if="not results" class="text-muted">No results yet this season.</p>
+                        <t t-else="">
+                            <p class="mb-3 o_rugby_summary">
+                                <span class="me-3 d-inline-block"><strong>Record</strong>
+                                    <t t-out="summary['wins']"/>-<t t-out="summary['losses']"/>-<t t-out="summary['draws']"/></span>
+                                <span class="me-3 d-inline-block"><strong>Points for</strong> <t t-out="summary['points_for']"/></span>
+                                <span class="d-inline-block"><strong>Points against</strong> <t t-out="summary['points_against']"/></span>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table align-middle o_rugby_results">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Match</th>
+                                            <th class="text-center">Score</th>
+                                            <th class="text-center">Result</th>
+                                            <th class="d-none d-md-table-cell"/>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="results" t-as="match">
+                                            <td class="text-md-nowrap">
+                                                <span t-out="match.kickoff"
+                                                    t-options="{'widget': 'datetime', 'tz_name': match.event_id.date_tz or 'UTC', 'format': 'MMM d, y'}"/>
+                                            </td>
+                                            <td t-out="match.name"/>
+                                            <!-- Home score first, matching the order of the names. -->
+                                            <td class="text-center text-nowrap fw-bold">
+                                                <t t-if="match.home_away == 'home'"><t t-out="match.score_for"/> – <t t-out="match.score_against"/></t>
+                                                <t t-else=""><t t-out="match.score_against"/> – <t t-out="match.score_for"/></t>
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-if="match.result == 'win'" class="badge text-bg-success">Win</span>
+                                                <span t-elif="match.result == 'loss'" class="badge text-bg-danger">Loss</span>
+                                                <span t-else="" class="badge text-bg-secondary">Draw</span>
+                                                <a t-if="match.recording_url" t-att-href="match.recording_url" target="_blank"
+                                                    rel="noopener" class="d-block small mt-1 d-md-none">Watch</a>
+                                            </td>
+                                            <td class="text-end d-none d-md-table-cell">
+                                                <a t-if="match.recording_url" t-att-href="match.recording_url" target="_blank"
+                                                    rel="noopener" class="btn btn-sm btn-outline-primary">Watch</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

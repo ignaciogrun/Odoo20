@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rugby_season_view_list" model="ir.ui.view">
+        <field name="name">rugby.season.list</field>
+        <field name="model">rugby.season</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="team_id"/>
+                <field name="name"/>
+                <field name="date_start" optional="show"/>
+                <field name="date_end" optional="show"/>
+                <field name="matches_played"/>
+                <field name="record"/>
+                <field name="points_for" optional="show"/>
+                <field name="points_against" optional="show"/>
+                <field name="points_difference" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="rugby_season_view_form" model="ir.ui.view">
+        <field name="name">rugby.season.form</field>
+        <field name="model">rugby.season</field>
+        <field name="arch" type="xml">
+            <form string="Season">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_matches" type="object" class="oe_stat_button" icon="calendar_today">
+                            <field name="match_count" widget="statinfo" string="Matches"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-secondary" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Fall 2026"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="team_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Season So Far">
+                            <field name="matches_played"/>
+                            <field name="record"/>
+                            <field name="points_for"/>
+                            <field name="points_against"/>
+                            <field name="points_difference"/>
+                            <field name="tries"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Matches" name="matches">
+                            <!-- Fixtures are typed straight into this list (no pop-up). The
+                                 arrow opens the full match page for the score and lineup. -->
+                            <field name="match_ids" context="{'default_season_id': id}">
+                                <list editable="bottom" default_order="kickoff" decoration-muted="state == 'cancelled'">
+                                    <field name="kickoff"/>
+                                    <field name="opponent" placeholder="Opponent"/>
+                                    <field name="home_away"/>
+                                    <field name="venue_id" optional="show"/>
+                                    <field name="score_display" readonly="1"/>
+                                    <field name="result" widget="badge" readonly="1"
+                                        decoration-success="result == 'win'"
+                                        decoration-danger="result == 'loss'"
+                                        decoration-info="result == 'draw'"/>
+                                    <field name="state" widget="badge" readonly="1"
+                                        decoration-info="state == 'scheduled'"
+                                        decoration-success="state == 'played'"/>
+                                    <button name="action_open_match" type="object" icon="arrow_forward"
+                                        title="Open the match to enter the score and lineup"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="rugby_season_view_search" model="ir.ui.view">
+        <field name="name">rugby.season.search</field>
+        <field name="model">rugby.season</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="team_id"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <filter name="group_team" string="Team" context="{'group_by': 'team_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rugby_season" model="ir.actions.act_window">
+        <field name="name">Seasons</field>
+        <field name="res_model">rugby.season</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">seasons</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a season</p>
+            <p>A season belongs to one team and holds its matches. Its record and points add up as results come in.</p>
+        </field>
+    </record>
+</odoo>

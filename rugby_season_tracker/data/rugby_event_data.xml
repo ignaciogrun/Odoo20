@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The lists from the film-review coding template (World Rugby Game Analysis
+         definitions). noupdate: the club can rename or add to them and upgrades
+         leave their changes alone. -->
+    <data noupdate="1">
+        <record id="event_category_scoring" model="rugby.event.category">
+            <field name="name">Scoring</field>
+            <field name="sequence">10</field>
+            <field name="color">10</field>
+        </record>
+        <record id="event_category_attack" model="rugby.event.category">
+            <field name="name">Attack</field>
+            <field name="sequence">20</field>
+            <field name="color">4</field>
+        </record>
+        <record id="event_category_breakdown" model="rugby.event.category">
+            <field name="name">Breakdown</field>
+            <field name="sequence">30</field>
+            <field name="color">3</field>
+        </record>
+        <record id="event_category_defence" model="rugby.event.category">
+            <field name="name">Defence</field>
+            <field name="sequence">40</field>
+            <field name="color">1</field>
+        </record>
+        <record id="event_category_phase_of_play" model="rugby.event.category">
+            <field name="name">Phase of Play</field>
+            <field name="sequence">50</field>
+            <field name="color">8</field>
+        </record>
+        <record id="event_category_kicking" model="rugby.event.category">
+            <field name="name">Kicking</field>
+            <field name="sequence">60</field>
+            <field name="color">5</field>
+        </record>
+        <record id="event_category_errors" model="rugby.event.category">
+            <field name="name">Errors</field>
+            <field name="sequence">70</field>
+            <field name="color">9</field>
+        </record>
+        <record id="event_category_scrum" model="rugby.event.category">
+            <field name="name">Scrum</field>
+            <field name="sequence">80</field>
+            <field name="color">2</field>
+        </record>
+        <record id="event_category_lineout" model="rugby.event.category">
+            <field name="name">Lineout</field>
+            <field name="sequence">90</field>
+            <field name="color">7</field>
+        </record>
+        <record id="event_category_restarts" model="rugby.event.category">
+            <field name="name">Restarts</field>
+            <field name="sequence">100</field>
+            <field name="color">11</field>
+        </record>
+        <record id="event_category_sanctions" model="rugby.event.category">
+            <field name="name">Sanctions</field>
+            <field name="sequence">110</field>
+            <field name="color">6</field>
+        </record>
+        <record id="event_category_match_events" model="rugby.event.category">
+            <field name="name">Match Events</field>
+            <field name="sequence">120</field>
+            <field name="color">0</field>
+        </record>
+        <record id="event_type_try_scored" model="rugby.event.type">
+            <field name="name">Try Scored</field>
+            <field name="code">try_scored</field>
+            <field name="sequence">10</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="detail">try</field>
+            <field name="points">5</field>
+            <field name="definition">Player grounds the ball in a controlled way over the opponents' goal line. WR totals include penalty tries; here log penalty tries as Penalty Try instead.</field>
+        </record>
+        <record id="event_type_penalty_try" model="rugby.event.type">
+            <field name="name">Penalty Try</field>
+            <field name="code">penalty_try</field>
+            <field name="sequence">20</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="points">7</field>
+            <field name="definition">Try awarded by the referee rather than scored by a player. Team stat - leave Player # blank.</field>
+        </record>
+        <record id="event_type_conversion_scored" model="rugby.event.type">
+            <field name="name">Conversion Scored</field>
+            <field name="code">conversion_scored</field>
+            <field name="sequence">30</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="points">2</field>
+            <field name="definition">Conversion kick passes between the uprights and over the crossbar.</field>
+        </record>
+        <record id="event_type_conversion_missed" model="rugby.event.type">
+            <field name="name">Conversion Missed</field>
+            <field name="code">conversion_missed</field>
+            <field name="sequence">40</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="definition">Conversion kick does not pass between the uprights and over the crossbar.</field>
+        </record>
+        <record id="event_type_penalty_to_goal_scored" model="rugby.event.type">
+            <field name="name">Penalty to Goal Scored</field>
+            <field name="code">penalty_to_goal_scored</field>
+            <field name="sequence">50</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="points">3</field>
+            <field name="definition">Penalty kick at goal passes between the uprights and over the crossbar.</field>
+        </record>
+        <record id="event_type_penalty_to_goal_missed" model="rugby.event.type">
+            <field name="name">Penalty to Goal Missed</field>
+            <field name="code">penalty_to_goal_missed</field>
+            <field name="sequence">60</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="definition">Penalty kick at goal does not pass between the uprights and over the crossbar.</field>
+        </record>
+        <record id="event_type_drop_goal_scored" model="rugby.event.type">
+            <field name="name">Drop Goal Scored</field>
+            <field name="code">drop_goal_scored</field>
+            <field name="sequence">70</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="points">3</field>
+            <field name="definition">Drop goal passes between the uprights and over the crossbar.</field>
+        </record>
+        <record id="event_type_drop_goal_missed" model="rugby.event.type">
+            <field name="name">Drop Goal Missed</field>
+            <field name="code">drop_goal_missed</field>
+            <field name="sequence">80</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="definition">Drop goal does not pass between the uprights and over the crossbar.</field>
+        </record>
+        <record id="event_type_tmo_decision" model="rugby.event.type">
+            <field name="name">TMO Decision</field>
+            <field name="code">tmo_decision</field>
+            <field name="sequence">90</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scoring')])]"/>
+            <field name="definition">A try decision is referred to the TMO.</field>
+        </record>
+        <record id="event_type_pass" model="rugby.event.type">
+            <field name="name">Pass</field>
+            <field name="code">pass</field>
+            <field name="sequence">100</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_attack')])]"/>
+            <field name="definition">Player throws the ball, other than the throw-in to a lineout or scrum.</field>
+        </record>
+        <record id="event_type_offload" model="rugby.event.type">
+            <field name="name">Offload</field>
+            <field name="code">offload</field>
+            <field name="sequence">110</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_attack')])]"/>
+            <field name="definition">Pass made while being tackled, or by a player brought to ground who passes before a ruck forms.</field>
+        </record>
+        <record id="event_type_ball_carry" model="rugby.event.type">
+            <field name="name">Ball Carry</field>
+            <field name="code">ball_carry</field>
+            <field name="sequence">120</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_attack')])]"/>
+            <field name="detail">carry</field>
+            <field name="definition">Player with the ball who engages in contact with the opposition.</field>
+        </record>
+        <record id="event_type_own_ruck_won" model="rugby.event.type">
+            <field name="name">Own Ruck Won</field>
+            <field name="code">own_ruck_won</field>
+            <field name="sequence">130</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_breakdown')])]"/>
+            <field name="definition">Team in possession at the start of the ruck keeps it when the ball leaves; or opponents concede a penalty/free kick; or the ruck is unplayable but retained by the team in possession. If advantage is brought back during the ruck and a FK/penalty/scrum is awarded, the ruck counts and the awarded team is deemed to have won it.</field>
+        </record>
+        <record id="event_type_own_ruck_lost" model="rugby.event.type">
+            <field name="name">Own Ruck Lost</field>
+            <field name="code">own_ruck_lost</field>
+            <field name="sequence">140</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_breakdown')])]"/>
+            <field name="definition">Team in possession at the start loses it when the ball leaves the ruck; or concedes a penalty/free kick; or the ruck is unplayable and a scrum goes to the opponents. (Rucks total on Match Summary = won + lost, both teams.)</field>
+        </record>
+        <record id="event_type_own_maul_won" model="rugby.event.type">
+            <field name="name">Own Maul Won</field>
+            <field name="code">own_maul_won</field>
+            <field name="sequence">150</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_breakdown')])]"/>
+            <field name="definition">Team in possession at the start keeps it when the ball leaves the maul; or opponents concede a penalty/free kick; or the maul is unplayable from a kick but retained by the team in possession. Advantage rules as for rucks.</field>
+        </record>
+        <record id="event_type_own_maul_lost" model="rugby.event.type">
+            <field name="name">Own Maul Lost</field>
+            <field name="code">own_maul_lost</field>
+            <field name="sequence">160</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_breakdown')])]"/>
+            <field name="definition">Team in possession at the start loses it when the ball leaves the maul; or concedes a penalty/free kick; or the maul is unplayable and possession goes to the opponents. (Mauls total = won + lost, both teams.)</field>
+        </record>
+        <record id="event_type_ruck_arrival" model="rugby.event.type">
+            <field name="name">Ruck Arrival</field>
+            <field name="code">ruck_arrival</field>
+            <field name="sequence">170</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_breakdown')])]"/>
+            <field name="definition">ASSUMPTION (not on the WR page): a player arrives at and joins a ruck (clean-out, support or jackal support). Log one row per arriving player with their Player #; Team = Opp for the opposition.</field>
+        </record>
+        <record id="event_type_tackler" model="rugby.event.type">
+            <field name="name">Tackler</field>
+            <field name="code">tackler</field>
+            <field name="sequence">180</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_defence')])]"/>
+            <field name="definition">Defender who attempted and completed a tackle and went to ground as a result.</field>
+        </record>
+        <record id="event_type_assist_tackler" model="rugby.event.type">
+            <field name="name">Assist Tackler</field>
+            <field name="code">assist_tackler</field>
+            <field name="sequence">190</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_defence')])]"/>
+            <field name="definition">Defender who attempted and completed a tackle and stayed on their feet.</field>
+        </record>
+        <record id="event_type_missed_tackle" model="rugby.event.type">
+            <field name="name">Missed Tackle</field>
+            <field name="code">missed_tackle</field>
+            <field name="sequence">200</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_defence')])]"/>
+            <field name="definition">Defender fails to complete a tackle they could reasonably have been expected to make.</field>
+        </record>
+        <record id="event_type_jackle" model="rugby.event.type">
+            <field name="name">Jackle</field>
+            <field name="code">jackle</field>
+            <field name="sequence">210</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_defence')])]"/>
+            <field name="definition">ASSUMPTION: a jackal attempt that wins the ball or a penalty. Log together with Jackle Attempt.</field>
+        </record>
+        <record id="event_type_jackle_attempt" model="rugby.event.type">
+            <field name="name">Jackle Attempt</field>
+            <field name="code">jackle_attempt</field>
+            <field name="sequence">220</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_defence')])]"/>
+            <field name="definition">First arriving defender attempts to get hands on the ball after a tackle (WR 'Jackler / Jackle attempt'). Log every attempt.</field>
+        </record>
+        <record id="event_type_5_phases" model="rugby.event.type">
+            <field name="name">5+ Phases</field>
+            <field name="code">5_phases</field>
+            <field name="sequence">230</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_phase_of_play')])]"/>
+            <field name="definition">A sequence of play in which the team in possession reaches five or more phases (phases = the rucks and mauls that follow the first phase).</field>
+        </record>
+        <record id="event_type_7_phases" model="rugby.event.type">
+            <field name="name">7+ Phases</field>
+            <field name="code">7_phases</field>
+            <field name="sequence">240</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_phase_of_play')])]"/>
+            <field name="definition">A sequence of play in which the team in possession reaches seven or more phases.</field>
+        </record>
+        <record id="event_type_into_opp_22_entry" model="rugby.event.type">
+            <field name="name">Into Opp 22 (Entry)</field>
+            <field name="code">into_opp_22_entry</field>
+            <field name="sequence">250</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_phase_of_play')])]"/>
+            <field name="definition">Team enters the opposition 22 in control of the ball. Leaving and re-entering within the same possession is still one entry.</field>
+        </record>
+        <record id="event_type_kick" model="rugby.event.type">
+            <field name="name">Kick</field>
+            <field name="code">kick</field>
+            <field name="sequence">260</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_kicking')])]"/>
+            <field name="detail">kick</field>
+            <field name="definition">Any kick out of hand or from the ground in general play (WR: possession kicked in general play); excludes penalty kicks, free kicks, marks, drop goals, conversions and restarts. Always log Kick Meters with it.</field>
+        </record>
+        <record id="event_type_kick_charged_down_or_deflected" model="rugby.event.type">
+            <field name="name">Kick Charged Down or Deflected</field>
+            <field name="code">kick_charged_down_or_deflected</field>
+            <field name="sequence">270</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_kicking')])]"/>
+            <field name="definition">Kick whose flight is significantly altered by contact with a player from the team not in possession. A charged-down drop kick is counted as a drop goal miss instead.</field>
+        </record>
+        <record id="event_type_kick_regained_by_kicking_team" model="rugby.event.type">
+            <field name="name">Kick Regained by Kicking Team</field>
+            <field name="code">kick_regained_by_kicking_team</field>
+            <field name="sequence">280</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_kicking')])]"/>
+            <field name="definition">Kicking team regains possession from its kick (general play, kicked penalty or kicked free kick). WR total also adds own restart regained (see Match Summary).</field>
+        </record>
+        <record id="event_type_kick_received_by_non_kicking_team" model="rugby.event.type">
+            <field name="name">Kick Received by Non-Kicking Team</field>
+            <field name="code">kick_received_by_non_kicking_team</field>
+            <field name="sequence">290</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_kicking')])]"/>
+            <field name="definition">Any kick (general play, free kick, mark, penalty) caught or picked up by the other team, including a knock-on when trying to retain it that leads to an immediate scrum.</field>
+        </record>
+        <record id="event_type_knockon" model="rugby.event.type">
+            <field name="name">Knockon</field>
+            <field name="code">knockon</field>
+            <field name="sequence">300</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_errors')])]"/>
+            <field name="definition">Referee stops the match for a knock-on.</field>
+        </record>
+        <record id="event_type_forward_pass" model="rugby.event.type">
+            <field name="name">Forward Pass</field>
+            <field name="code">forward_pass</field>
+            <field name="sequence">310</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_errors')])]"/>
+            <field name="definition">Referee stops the match for a forward pass.</field>
+        </record>
+        <record id="event_type_accidental_off_sides" model="rugby.event.type">
+            <field name="name">Accidental Off-sides</field>
+            <field name="code">accidental_off_sides</field>
+            <field name="sequence">320</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_errors')])]"/>
+            <field name="definition">Team concedes an accidental offside; opposition awarded a scrum.</field>
+        </record>
+        <record id="event_type_ball_touches_referee" model="rugby.event.type">
+            <field name="name">Ball Touches Referee</field>
+            <field name="code">ball_touches_referee</field>
+            <field name="sequence">330</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_errors')])]"/>
+            <field name="definition">Ball touches the referee; scrum to the team in possession.</field>
+        </record>
+        <record id="event_type_turnover_conceded_in_general_play" model="rugby.event.type">
+            <field name="name">Turnover Conceded in General Play</field>
+            <field name="code">turnover_conceded_in_general_play</field>
+            <field name="sequence">340</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_errors')])]"/>
+            <field name="definition">Possession lost at the tackle, from an error, or from a general-play infringement.</field>
+        </record>
+        <record id="event_type_own_scrum" model="rugby.event.type">
+            <field name="name">Own Scrum</field>
+            <field name="code">own_scrum</field>
+            <field name="sequence">350</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scrum')])]"/>
+            <field name="definition">Scrum on own feed. Count once - a reset scrum is not an additional scrum.</field>
+        </record>
+        <record id="event_type_own_scrum_won" model="rugby.event.type">
+            <field name="name">Own Scrum Won</field>
+            <field name="code">own_scrum_won</field>
+            <field name="sequence">360</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scrum')])]"/>
+            <field name="definition">Ball channelled to the back of the feeding team's scrum and play resumes (still won if the No.8 knocks on); or a penalty/free kick is awarded against the non-feeding team.</field>
+        </record>
+        <record id="event_type_own_scrum_lost" model="rugby.event.type">
+            <field name="name">Own Scrum Lost</field>
+            <field name="code">own_scrum_lost</field>
+            <field name="sequence">370</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scrum')])]"/>
+            <field name="definition">Ball goes beyond the opposition No.8's feet and they gain possession, or the scrum wheels more than 90 degrees; or a penalty/free kick is awarded against the feeding team.</field>
+        </record>
+        <record id="event_type_scrum_collapse_on_own_feed" model="rugby.event.type">
+            <field name="name">Scrum Collapse on Own Feed</field>
+            <field name="code">scrum_collapse_on_own_feed</field>
+            <field name="sequence">380</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scrum')])]"/>
+            <field name="definition">One or both front rows (or front-row players) go to ground at engagement or during the scrum and do not immediately get up.</field>
+        </record>
+        <record id="event_type_scrum_reset_on_own_feed" model="rugby.event.type">
+            <field name="name">Scrum Reset on Own Feed</field>
+            <field name="code">scrum_reset_on_own_feed</field>
+            <field name="sequence">390</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scrum')])]"/>
+            <field name="definition">Referee orders an incomplete scrum to be reformed.</field>
+        </record>
+        <record id="event_type_scrum_won_through_90" model="rugby.event.type">
+            <field name="name">Scrum Won Through 90</field>
+            <field name="code">scrum_won_through_90</field>
+            <field name="sequence">400</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_scrum')])]"/>
+            <field name="definition">Scrum wheeled through more than 90 degrees; referee stops play and a new scrum is formed with the throw-in going to the team not in possession at the stoppage.</field>
+        </record>
+        <record id="event_type_own_line_out" model="rugby.event.type">
+            <field name="name">Own Line-out</field>
+            <field name="code">own_line_out</field>
+            <field name="sequence">410</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_lineout')])]"/>
+            <field name="detail">lineout</field>
+            <field name="definition">Lineout where own team throws in. Quick throw-ins are included.</field>
+        </record>
+        <record id="event_type_quick_throw_in" model="rugby.event.type">
+            <field name="name">Quick Throw In</field>
+            <field name="code">quick_throw_in</field>
+            <field name="sequence">420</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_lineout')])]"/>
+            <field name="definition">Throw-in taken from the touchline before a lineout forms. Log it plus a Won/Lost row; it counts as an own line-out.</field>
+        </record>
+        <record id="event_type_own_line_out_won" model="rugby.event.type">
+            <field name="name">Own Line-out Won</field>
+            <field name="code">own_line_out_won</field>
+            <field name="sequence">430</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_lineout')])]"/>
+            <field name="definition">Team gains possession from the lineout (passed, tapped, retained, rucked or mauled); or non-throwing team concedes a penalty/free kick; or non-throwing team knocks on and a scrum is awarded. A quick throw won counts here.</field>
+        </record>
+        <record id="event_type_own_line_out_lost" model="rugby.event.type">
+            <field name="name">Own Line-out Lost</field>
+            <field name="code">own_line_out_lost</field>
+            <field name="sequence">440</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_lineout')])]"/>
+            <field name="definition">Team loses possession from the lineout; or throwing team concedes a penalty/free kick; or throwing team knocks on and a scrum is awarded. A quick throw lost counts here.</field>
+        </record>
+        <record id="event_type_own_line_out_lost_not_straight" model="rugby.event.type">
+            <field name="name">Own Line-out Lost (Not Straight)</field>
+            <field name="code">own_line_out_lost_not_straight</field>
+            <field name="sequence">450</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_lineout')])]"/>
+            <field name="definition">Throw is not straight down the middle. WR counts this as a lost lineout: log this row INSTEAD of Own Line-out Lost (win % counts it as a loss).</field>
+        </record>
+        <record id="event_type_lineout_contested" model="rugby.event.type">
+            <field name="name">Lineout Contested</field>
+            <field name="code">lineout_contested</field>
+            <field name="sequence">460</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_lineout')])]"/>
+            <field name="definition">Ball thrown in and the opposition contest in the air (e.g. lift a player for the ball).</field>
+        </record>
+        <record id="event_type_own_kick_off_restart" model="rugby.event.type">
+            <field name="name">Own Kick Off/Restart</field>
+            <field name="code">own_kick_off_restart</field>
+            <field name="sequence">470</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_restarts')])]"/>
+            <field name="detail">kick</field>
+            <field name="definition">Kick-offs at the start of each half and 50m restarts after scores. Not 22m drop-outs.</field>
+        </record>
+        <record id="event_type_own_kick_off_restart_regained" model="rugby.event.type">
+            <field name="name">Own Kick Off/Restart Regained</field>
+            <field name="code">own_kick_off_restart_regained</field>
+            <field name="sequence">480</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_restarts')])]"/>
+            <field name="definition">Kicking team regains possession from its restart, including when the receiving team knocks on and a scrum is awarded immediately. Not regained if the receivers concede a penalty/free kick.</field>
+        </record>
+        <record id="event_type_own_kick_off_restart_error" model="rugby.event.type">
+            <field name="name">Own Kick Off/Restart Error</field>
+            <field name="code">own_kick_off_restart_error</field>
+            <field name="sequence">490</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_restarts')])]"/>
+            <field name="definition">Kick travels less than 10m, goes dead / dead in-goal, goes into touch on the full, players are in front of the kicker, or the kicker is over the line. Does not include knock-ons directly from the restart.</field>
+        </record>
+        <record id="event_type_penalty_conceded_scrum" model="rugby.event.type">
+            <field name="name">Penalty Conceded - Scrum</field>
+            <field name="code">penalty_conceded_scrum</field>
+            <field name="sequence">500</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Penalty conceded at scrum. Pick the Offence Detail (binding, collapsing, engagement, handling, early detachment, standing up, boring in, feeding).</field>
+        </record>
+        <record id="event_type_penalty_conceded_line_out" model="rugby.event.type">
+            <field name="name">Penalty Conceded - Line-out</field>
+            <field name="code">penalty_conceded_line_out</field>
+            <field name="sequence">510</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Penalty conceded at lineout. Offence Detail: barging, foul play, offside.</field>
+        </record>
+        <record id="event_type_penalty_conceded_general_play" model="rugby.event.type">
+            <field name="name">Penalty Conceded - General Play</field>
+            <field name="code">penalty_conceded_general_play</field>
+            <field name="sequence">520</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Penalty conceded in general play. Offence Detail: obstruction, not retreating 10m, deliberately knocking on, accidental offside, in front of kicker, other.</field>
+        </record>
+        <record id="event_type_penalty_conceded_ruck_maul" model="rugby.event.type">
+            <field name="name">Penalty Conceded - Ruck/Maul</field>
+            <field name="code">penalty_conceded_ruck_maul</field>
+            <field name="sequence">530</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Penalty conceded at ruck or maul. Offence Detail: not staying on feet, handling in ruck, collapsing maul, entering from side, not rolling away, not releasing, obstruction.</field>
+        </record>
+        <record id="event_type_penalty_conceded_foul_play" model="rugby.event.type">
+            <field name="name">Penalty Conceded - Foul Play</field>
+            <field name="code">penalty_conceded_foul_play</field>
+            <field name="sequence">540</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Penalty to the non-offending team for foul play (gouging, punching, stamping, dangerous tackles, etc.).</field>
+        </record>
+        <record id="event_type_penalty_conceded_offside" model="rugby.event.type">
+            <field name="name">Penalty Conceded - Offside</field>
+            <field name="code">penalty_conceded_offside</field>
+            <field name="sequence">550</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Penalty conceded for offside (set piece / breakdown offside line, 10m at lineout, from a kick in general play).</field>
+        </record>
+        <record id="event_type_penalty_kicked" model="rugby.event.type">
+            <field name="name">Penalty Kicked</field>
+            <field name="code">penalty_kicked</field>
+            <field name="sequence">560</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">kick</field>
+            <field name="definition">Penalty kicked from hand. Excludes goal attempts and tapped penalties.</field>
+        </record>
+        <record id="event_type_penalty_scrummed" model="rugby.event.type">
+            <field name="name">Penalty Scrummed</field>
+            <field name="code">penalty_scrummed</field>
+            <field name="sequence">570</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="definition">Scrum taken by a team that elected it after being awarded a penalty.</field>
+        </record>
+        <record id="event_type_penalty_tapped" model="rugby.event.type">
+            <field name="name">Penalty Tapped</field>
+            <field name="code">penalty_tapped</field>
+            <field name="sequence">580</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="definition">Penalty where a player tap-kicks the ball to himself/herself to restart.</field>
+        </record>
+        <record id="event_type_free_kick_conceded_scrum" model="rugby.event.type">
+            <field name="name">Free Kick Conceded - Scrum</field>
+            <field name="code">free_kick_conceded_scrum</field>
+            <field name="sequence">590</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Free kick to the non-offending team for an infringement at scrum.</field>
+        </record>
+        <record id="event_type_free_kick_conceded_line_out" model="rugby.event.type">
+            <field name="name">Free Kick Conceded - Line-out</field>
+            <field name="code">free_kick_conceded_line_out</field>
+            <field name="sequence">600</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Free kick for an infringement at lineout.</field>
+        </record>
+        <record id="event_type_free_kick_conceded_general_play" model="rugby.event.type">
+            <field name="name">Free Kick Conceded - General Play</field>
+            <field name="code">free_kick_conceded_general_play</field>
+            <field name="sequence">610</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Free kick for an infringement in general play (not including marks).</field>
+        </record>
+        <record id="event_type_free_kick_conceded_ruck_maul" model="rugby.event.type">
+            <field name="name">Free Kick Conceded - Ruck/Maul</field>
+            <field name="code">free_kick_conceded_ruck_maul</field>
+            <field name="sequence">620</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">offence</field>
+            <field name="definition">Free kick for an infringement at ruck or maul.</field>
+        </record>
+        <record id="event_type_free_kick_kicked" model="rugby.event.type">
+            <field name="name">Free Kick Kicked</field>
+            <field name="code">free_kick_kicked</field>
+            <field name="sequence">630</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="detail">kick</field>
+            <field name="definition">Free kick kicked from hand, including a mark. Excludes tapped free kicks.</field>
+        </record>
+        <record id="event_type_free_kick_scrummed" model="rugby.event.type">
+            <field name="name">Free Kick Scrummed</field>
+            <field name="code">free_kick_scrummed</field>
+            <field name="sequence">640</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="definition">Scrum taken by a team that elected it after being awarded a free kick.</field>
+        </record>
+        <record id="event_type_free_kick_tapped" model="rugby.event.type">
+            <field name="name">Free Kick Tapped</field>
+            <field name="code">free_kick_tapped</field>
+            <field name="sequence">650</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="definition">Free kick where a player tap-kicks the ball to himself/herself to restart.</field>
+        </record>
+        <record id="event_type_yellow_card" model="rugby.event.type">
+            <field name="name">Yellow Card</field>
+            <field name="code">yellow_card</field>
+            <field name="sequence">660</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="definition">Referee sends a player off for 10 minutes.</field>
+        </record>
+        <record id="event_type_red_card" model="rugby.event.type">
+            <field name="name">Red Card</field>
+            <field name="code">red_card</field>
+            <field name="sequence">670</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="definition">Player is sent off and takes no further part; team plays one short.</field>
+        </record>
+        <record id="event_type_2nd_yellow_card" model="rugby.event.type">
+            <field name="name">2nd Yellow Card</field>
+            <field name="code">2nd_yellow_card</field>
+            <field name="sequence">680</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_sanctions')])]"/>
+            <field name="definition">Second yellow card to a player, followed by a red card.</field>
+        </record>
+        <record id="event_type_touch_judge_report" model="rugby.event.type">
+            <field name="name">Touch Judge Report</field>
+            <field name="code">touch_judge_report</field>
+            <field name="sequence">690</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_match_events')])]"/>
+            <field name="definition">Match stops and the touch judge / assistant referee reports an incident to the referee.</field>
+        </record>
+        <record id="event_type_injury_stoppage" model="rugby.event.type">
+            <field name="name">Injury Stoppage</field>
+            <field name="code">injury_stoppage</field>
+            <field name="sequence">700</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_match_events')])]"/>
+            <field name="definition">Match stops so player(s) can receive medical treatment.</field>
+        </record>
+        <record id="event_type_injury_replacement" model="rugby.event.type">
+            <field name="name">Injury Replacement</field>
+            <field name="code">injury_replacement</field>
+            <field name="sequence">710</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_match_events')])]"/>
+            <field name="definition">Player replaced due to injury.</field>
+        </record>
+        <record id="event_type_blood_replacement" model="rugby.event.type">
+            <field name="name">Blood Replacement</field>
+            <field name="code">blood_replacement</field>
+            <field name="sequence">720</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_match_events')])]"/>
+            <field name="definition">Player temporarily replaced for blood. Log two replacement events (out/in, then back).</field>
+        </record>
+        <record id="event_type_replacement" model="rugby.event.type">
+            <field name="name">Replacement</field>
+            <field name="code">replacement</field>
+            <field name="sequence">730</field>
+            <field name="category_ids" eval="[Command.set([ref('event_category_match_events')])]"/>
+            <field name="definition">Tactical replacement; a team may use up to 7 replacements.</field>
+        </record>
+        <record id="event_option_try_source_lineout" model="rugby.event.option">
+            <field name="name">Lineout</field>
+            <field name="kind">try_source</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="event_option_try_source_scrum" model="rugby.event.option">
+            <field name="name">Scrum</field>
+            <field name="kind">try_source</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="event_option_try_source_restart" model="rugby.event.option">
+            <field name="name">Restart</field>
+            <field name="kind">try_source</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="event_option_try_source_kick" model="rugby.event.option">
+            <field name="name">Kick</field>
+            <field name="kind">try_source</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="event_option_try_source_turnover_or_handling_error" model="rugby.event.option">
+            <field name="name">Turnover or Handling Error</field>
+            <field name="kind">try_source</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="event_option_try_source_mark_pen_fk" model="rugby.event.option">
+            <field name="name">Mark &amp; Pen/FK</field>
+            <field name="kind">try_source</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="event_option_try_origin_own_22" model="rugby.event.option">
+            <field name="name">Own 22</field>
+            <field name="kind">try_origin</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="event_option_try_origin_own_half_22_to_halfway" model="rugby.event.option">
+            <field name="name">Own Half (22 to Halfway)</field>
+            <field name="kind">try_origin</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="event_option_try_origin_opp_half_halfway_to_opp_22" model="rugby.event.option">
+            <field name="name">Opp Half (Halfway to Opp 22)</field>
+            <field name="kind">try_origin</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="event_option_try_origin_opp_22" model="rugby.event.option">
+            <field name="name">Opp 22</field>
+            <field name="kind">try_origin</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="event_option_try_location_far_left" model="rugby.event.option">
+            <field name="name">Far Left</field>
+            <field name="kind">try_location</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="event_option_try_location_left" model="rugby.event.option">
+            <field name="name">Left</field>
+            <field name="kind">try_location</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="event_option_try_location_centre" model="rugby.event.option">
+            <field name="name">Centre</field>
+            <field name="kind">try_location</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="event_option_try_location_right" model="rugby.event.option">
+            <field name="name">Right</field>
+            <field name="kind">try_location</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="event_option_try_location_far_right" model="rugby.event.option">
+            <field name="name">Far Right</field>
+            <field name="kind">try_location</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="event_option_offence_binding" model="rugby.event.option">
+            <field name="name">Binding</field>
+            <field name="kind">offence</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="event_option_offence_collapsing" model="rugby.event.option">
+            <field name="name">Collapsing</field>
+            <field name="kind">offence</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="event_option_offence_engagement" model="rugby.event.option">
+            <field name="name">Engagement</field>
+            <field name="kind">offence</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="event_option_offence_handling" model="rugby.event.option">
+            <field name="name">Handling</field>
+            <field name="kind">offence</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="event_option_offence_early_detachment" model="rugby.event.option">
+            <field name="name">Early Detachment</field>
+            <field name="kind">offence</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="event_option_offence_standing_up" model="rugby.event.option">
+            <field name="name">Standing Up</field>
+            <field name="kind">offence</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="event_option_offence_boring_in" model="rugby.event.option">
+            <field name="name">Boring In</field>
+            <field name="kind">offence</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="event_option_offence_feeding" model="rugby.event.option">
+            <field name="name">Feeding</field>
+            <field name="kind">offence</field>
+            <field name="sequence">80</field>
+        </record>
+        <record id="event_option_offence_barging" model="rugby.event.option">
+            <field name="name">Barging</field>
+            <field name="kind">offence</field>
+            <field name="sequence">90</field>
+        </record>
+        <record id="event_option_offence_foul_play" model="rugby.event.option">
+            <field name="name">Foul Play</field>
+            <field name="kind">offence</field>
+            <field name="sequence">100</field>
+        </record>
+        <record id="event_option_offence_offside" model="rugby.event.option">
+            <field name="name">Offside</field>
+            <field name="kind">offence</field>
+            <field name="sequence">110</field>
+        </record>
+        <record id="event_option_offence_obstruction" model="rugby.event.option">
+            <field name="name">Obstruction</field>
+            <field name="kind">offence</field>
+            <field name="sequence">120</field>
+        </record>
+        <record id="event_option_offence_not_retreating_10m" model="rugby.event.option">
+            <field name="name">Not Retreating 10m</field>
+            <field name="kind">offence</field>
+            <field name="sequence">130</field>
+        </record>
+        <record id="event_option_offence_deliberately_knocking_on" model="rugby.event.option">
+            <field name="name">Deliberately Knocking On</field>
+            <field name="kind">offence</field>
+            <field name="sequence">140</field>
+        </record>
+        <record id="event_option_offence_accidental_offside" model="rugby.event.option">
+            <field name="name">Accidental Offside</field>
+            <field name="kind">offence</field>
+            <field name="sequence">150</field>
+        </record>
+        <record id="event_option_offence_in_front_of_kicker" model="rugby.event.option">
+            <field name="name">In Front of Kicker</field>
+            <field name="kind">offence</field>
+            <field name="sequence">160</field>
+        </record>
+        <record id="event_option_offence_not_staying_on_feet" model="rugby.event.option">
+            <field name="name">Not Staying on Feet</field>
+            <field name="kind">offence</field>
+            <field name="sequence">170</field>
+        </record>
+        <record id="event_option_offence_handling_in_ruck" model="rugby.event.option">
+            <field name="name">Handling in Ruck</field>
+            <field name="kind">offence</field>
+            <field name="sequence">180</field>
+        </record>
+        <record id="event_option_offence_collapsing_maul" model="rugby.event.option">
+            <field name="name">Collapsing Maul</field>
+            <field name="kind">offence</field>
+            <field name="sequence">190</field>
+        </record>
+        <record id="event_option_offence_entering_from_side" model="rugby.event.option">
+            <field name="name">Entering from Side</field>
+            <field name="kind">offence</field>
+            <field name="sequence">200</field>
+        </record>
+        <record id="event_option_offence_not_rolling_away" model="rugby.event.option">
+            <field name="name">Not Rolling Away</field>
+            <field name="kind">offence</field>
+            <field name="sequence">210</field>
+        </record>
+        <record id="event_option_offence_not_releasing" model="rugby.event.option">
+            <field name="name">Not Releasing</field>
+            <field name="kind">offence</field>
+            <field name="sequence">220</field>
+        </record>
+        <record id="event_option_offence_other" model="rugby.event.option">
+            <field name="name">Other</field>
+            <field name="kind">offence</field>
+            <field name="sequence">230</field>
+        </record>
+    </data>
+</odoo>
