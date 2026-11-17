@@ -25,6 +25,8 @@ NUMBER_POSITIONS = {
     14: "right_wing", 15: "fullback",
 }
 STARTERS = 15
+# Events whose Kick Meters count towards a player's kick meters.
+KICK_CODES = ("kick", "penalty_kicked", "free_kick_kicked", "own_kick_off_restart")
 
 
 class RugbyMatchPlayer(models.Model):
@@ -41,8 +43,51 @@ class RugbyMatchPlayer(models.Model):
     position = fields.Selection(POSITIONS, compute="_compute_position", store=True, readonly=False)
     starter = fields.Boolean(compute="_compute_starter", store=True)
     minutes_played = fields.Integer("Minutes", aggregator="sum")
-    tackles = fields.Integer("Tackles", aggregator="sum")
-    tries = fields.Integer("Tries", aggregator="sum")
+
+    # Stats from the match's event log (our own events with this jersey number).
+    event_ids = fields.One2many("rugby.match.event", "lineup_id", string="Events")
+    # Tackles and tries were typed by hand before the event log existed. A match
+    # with no event log keeps what was typed; once a log exists it is the source.
+    tackles = fields.Integer(
+        "Tackles", compute="_compute_event_stats", store=True, readonly=False, aggregator="sum",
+        help="Tackler events. Typed by hand only on matches without an event log.",
+    )
+    tries = fields.Integer(
+        "Tries", compute="_compute_event_stats", store=True, readonly=False, aggregator="sum",
+        help="Try Scored events. Typed by hand only on matches without an event log.",
+    )
+    carries = fields.Integer("Ball Carries", compute="_compute_event_stats", store=True, aggregator="sum")
+    carry_meters = fields.Float("Carry Meters", compute="_compute_event_stats", store=True, aggregator="sum")
+    meters_per_carry = fields.Float("Meters / Carry", compute="_compute_event_stats", store=True, aggregator="avg")
+    passes = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    offloads = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    ruck_arrivals = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    assist_tackles = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    missed_tackles = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    tackle_rate = fields.Float(
+        "Tackle %", compute="_compute_event_stats", store=True, aggregator="avg",
+        help="(Tackler + Assist Tackler) / (Tackler + Assist Tackler + Missed Tackle)",
+    )
+    jackles = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    jackle_attempts = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    kicks = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    kick_meters = fields.Float(
+        compute="_compute_event_stats", store=True, aggregator="sum",
+        help="Meters on Kick, Penalty Kicked, Free Kick Kicked and Own Kick Off/Restart events.",
+    )
+    meters_per_kick = fields.Float("Meters / Kick", compute="_compute_event_stats", store=True, aggregator="avg")
+    knock_ons = fields.Integer("Knock-ons", compute="_compute_event_stats", store=True, aggregator="sum")
+    forward_passes = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    penalties_conceded = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    yellow_cards = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    red_cards = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    conversions = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    penalty_goals = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    drop_goals = fields.Integer(compute="_compute_event_stats", store=True, aggregator="sum")
+    points = fields.Integer(
+        compute="_compute_event_stats", store=True, aggregator="sum",
+        help="Try 5, conversion 2, penalty goal 3, drop goal 3.",
+    )
     # Always 1, so adding it up per player counts the matches they appeared in.
     appearances = fields.Integer(compute="_compute_appearances", store=True, aggregator="sum")
 
@@ -72,6 +117,38 @@ class RugbyMatchPlayer(models.Model):
     @api.depends("match_id")
     def _compute_appearances(self):
         self.appearances = 1
+
+    @api.depends("event_ids.event_type_id", "event_ids.carry_meters", "event_ids.kick_meters", "match_id.event_ids")
+    def _compute_event_stats(self):
+        for line in self:
+            codes = [event.event_code or "" for event in line.event_ids]
+            count = codes.count
+            tackles, assists, missed = count("tackler"), count("assist_tackler"), count("missed_tackle")
+            carries, tries = count("ball_carry"), count("try_scored")
+            kick_events = line.event_ids.filtered(lambda event: event.event_code in KICK_CODES)
+            if line.match_id.event_ids:
+                line.tackles, line.tries = tackles, tries
+            else:
+                # No event log on this match: keep the numbers typed by hand.
+                line.tackles, line.tries = line.tackles, line.tries
+            line.carries = carries
+            line.carry_meters = sum(line.event_ids.filtered(lambda event: event.event_code == "ball_carry").mapped("carry_meters"))
+            line.meters_per_carry = line.carry_meters / carries if carries else 0
+            line.passes, line.offloads = count("pass"), count("offload")
+            line.ruck_arrivals = count("ruck_arrival")
+            line.assist_tackles, line.missed_tackles = assists, missed
+            attempts = tackles + assists + missed
+            line.tackle_rate = (tackles + assists) / attempts if attempts else 0
+            line.jackles, line.jackle_attempts = count("jackle"), count("jackle_attempt")
+            line.kicks = count("kick")
+            line.kick_meters = sum(kick_events.mapped("kick_meters"))
+            line.meters_per_kick = line.kick_meters / len(kick_events) if kick_events else 0
+            line.knock_ons, line.forward_passes = count("knockon"), count("forward_pass")
+            line.penalties_conceded = sum(code.startswith("penalty_conceded") for code in codes)
+            line.yellow_cards, line.red_cards = count("yellow_card"), count("red_card")
+            line.conversions = count("conversion_scored")
+            line.penalty_goals, line.drop_goals = count("penalty_to_goal_scored"), count("drop_goal_scored")
+            line.points = 5 * tries + 2 * line.conversions + 3 * line.penalty_goals + 3 * line.drop_goals
 
     @api.depends("jersey_number")
     def _compute_starter(self):

@@ -12,9 +12,32 @@
                 <field name="season_id" optional="hide"/>
                 <field name="jersey_number" optional="show"/>
                 <field name="position" optional="show"/>
-                <field name="minutes_played" sum="Minutes"/>
-                <field name="tackles" sum="Tackles"/>
-                <field name="tries" sum="Tries"/>
+                <field name="minutes_played" sum="Minutes" optional="show"/>
+                <field name="carries" sum="Ball Carries"/>
+                <field name="carry_meters" sum="Carry Meters"/>
+                <field name="meters_per_carry" digits="[16, 1]"/>
+                <field name="passes" sum="Passes"/>
+                <field name="offloads" sum="Offloads"/>
+                <field name="ruck_arrivals" sum="Ruck Arrivals"/>
+                <field name="tackles" sum="Tackles" readonly="1"/>
+                <field name="assist_tackles" sum="Assist Tackles"/>
+                <field name="missed_tackles" sum="Missed Tackles"/>
+                <field name="tackle_rate" widget="percentage"/>
+                <field name="jackles" sum="Jackles"/>
+                <field name="jackle_attempts" sum="Jackle Attempts"/>
+                <field name="kicks" sum="Kicks"/>
+                <field name="kick_meters" sum="Kick Meters"/>
+                <field name="meters_per_kick" digits="[16, 1]"/>
+                <field name="knock_ons" sum="Knock-ons"/>
+                <field name="forward_passes" sum="Forward Passes"/>
+                <field name="penalties_conceded" sum="Penalties Conceded"/>
+                <field name="yellow_cards" sum="Yellow Cards"/>
+                <field name="red_cards" sum="Red Cards"/>
+                <field name="tries" sum="Tries" readonly="1"/>
+                <field name="conversions" sum="Conversions"/>
+                <field name="penalty_goals" sum="Penalty Goals"/>
+                <field name="drop_goals" sum="Drop Goals"/>
+                <field name="points" sum="Points"/>
             </list>
         </field>
     </record>
@@ -27,8 +50,13 @@
                 <field name="player_id" type="row"/>
                 <field name="appearances" type="measure"/>
                 <field name="minutes_played" type="measure"/>
+                <field name="carries" type="measure"/>
+                <field name="carry_meters" type="measure"/>
+                <field name="passes" type="measure"/>
                 <field name="tackles" type="measure"/>
+                <field name="missed_tackles" type="measure"/>
                 <field name="tries" type="measure"/>
+                <field name="points" type="measure"/>
             </pivot>
         </field>
     </record>
@@ -76,7 +104,7 @@
         <field name="context">{'search_default_played': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No stats yet</p>
-            <p>Stats come from match lineups. Open a played match and add each player's minutes, tackles and tries.</p>
+            <p>Stats come from each match's Team Sheet and Event Log.</p>
         </field>
     </record>
 </odoo>

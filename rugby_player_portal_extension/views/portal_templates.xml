@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The question, on the portal's Account Details page (/my/account). -->
+    <template id="portal_my_details_social" inherit_id="portal.portal_my_details" name="Account Details: Social Media Tagging">
+        <xpath expr="//div[@name='address_details']" position="after">
+            <div id="social_tagging" name="social_tagging" class="o_social_tagging row mt-4">
+                <div class="col-12">
+                    <h4 class="h5 mb-1">Social media</h4>
+                    <p class="text-muted mb-2">We share photos and videos from matches and events on social media. Can we tag you in them?</p>
+                    <div class="d-flex flex-wrap column-gap-4 row-gap-1 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="social_tagging" id="o_social_tagging_yes"
+                                value="yes" t-att-checked="partner_sudo.social_tagging == 'yes' or None"/>
+                            <label class="form-check-label" for="o_social_tagging_yes">Yes, tag me</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="social_tagging" id="o_social_tagging_no"
+                                value="no" t-att-checked="partner_sudo.social_tagging == 'no' or None"/>
+                            <label class="form-check-label" for="o_social_tagging_no">No, don't tag me</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="o_social_handle col-lg-6 mb-2">
+                    <label class="col-form-label" for="o_social_handle">Your social media handle</label>
+                    <div class="input-group">
+                        <span class="input-group-text">@</span>
+                        <input id="o_social_handle" type="text" name="social_handle" class="form-control"
+                            placeholder="jane.doe" autocomplete="off" autocapitalize="none" spellcheck="false"
+                            t-att-value="(partner_sudo.social_handle or '').lstrip('@')"/>
+                    </div>
+                    <small class="form-text text-muted">The account we should tag, for example on Instagram. You can change your answer here at any time.</small>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- A reminder on the portal home page until the question is answered. -->
+    <template id="portal_my_home_social_reminder" inherit_id="portal.portal_my_home" name="My Portal: Social Media Tagging Reminder">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <div t-if="not request.env.user.partner_id.social_tagging"
+                class="o_social_tagging_reminder alert alert-info d-flex flex-wrap align-items-center gap-2 mt-3 mb-0" role="status">
+                <span>Can we tag you in our social media posts?</span>
+                <a href="/my/account#social_tagging" class="btn btn-sm btn-primary ms-sm-auto">Answer in Account Details</a>
+            </div>
+        </xpath>
+    </template>
+</odoo>

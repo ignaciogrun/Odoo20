@@ -1,0 +1,228 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* rugby_player_portal_extension
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-17 17:12+0000\n"
+"PO-Revision-Date: 2026-11-17 17:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: rugby_player_portal_extension
+#: model:ir.module.module,description:base.module_rugby_player_portal_extension
+msgid ""
+"\n"
+"Adds a \"Can we tag you on social media?\" question to the portal's Account\n"
+"Details page. Answering Yes shows a box for the person's handle (for example\n"
+"@jane.doe). The answer and the handle are saved on the person's contact, so\n"
+"staff can filter contacts by who can and can't be tagged, and copy the handle\n"
+"when posting.\n"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/models/res_partner.py:0
+msgid ""
+"\"%s\" isn't a valid handle. Use letters, numbers, periods and underscores "
+"only (30 at most), for example @jane.doe."
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/models/res_partner.py:0
+msgid ""
+"%s agreed to be tagged on social media: add their handle, for example "
+"@jane.doe."
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.res_partner_kanban_view_social_tagging
+msgid "<i class=\"oi oi-fw me-1\" data-icon=\"alternate_email\" title=\"Can be tagged\"/>"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.res_partner_kanban_view_social_tagging
+msgid ""
+"<i class=\"oi oi-fw me-1\" data-icon=\"block\" title=\"Social media tagging\"/>\n"
+"                    <span>Don't tag</span>"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid ""
+"<small class=\"form-text text-muted\">The account we should tag, for example"
+" on Instagram. You can change your answer here at any time.</small>"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "<span class=\"input-group-text\">@</span>"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_home_social_reminder
+msgid "<span>Can we tag you in our social media posts?</span>"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_form_social_tagging
+msgid "@jane.doe"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_home_social_reminder
+msgid "Answer in Account Details"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields.selection,name:rugby_player_portal_extension.selection__res_partner__social_tagging__yes
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Can Tag"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model,name:rugby_player_portal_extension.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields.selection,name:rugby_player_portal_extension.selection__res_partner__social_tagging__no
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Don't Tag"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_list_social_tagging
+msgid "Handle"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__id
+msgid "ID"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "No, don't tag me"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_form_social_tagging
+msgid "Not answered yet: don't tag"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.module.module,shortdesc:base.module_rugby_player_portal_extension
+msgid "Player Portal Extension"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.module.module,summary:base.module_rugby_player_portal_extension
+msgid "Providing enhanced portal features for rugby players"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__social_handle
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_users__social_handle
+msgid "Social Media Handle"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__social_tagging
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_users__social_tagging
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Social Media Tagging"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "Social media"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_partner_list_social_tagging
+msgid "Tagging"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_partner__social_tagging_date
+#: model:ir.model.fields,field_description:rugby_player_portal_extension.field_res_users__social_tagging_date
+msgid "Tagging Answered On"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.view_res_partner_filter_social_tagging
+msgid "Tagging Not Answered"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_partner__social_handle
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_users__social_handle
+msgid ""
+"The account to tag, for example @jane.doe. Only kept while tagging is "
+"allowed."
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_partner__social_tagging
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_users__social_tagging
+msgid ""
+"The person's own answer to \"Can we tag you on social media?\". Empty means "
+"they haven't answered yet: don't tag them."
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid ""
+"We share photos and videos from matches and events on social media. Can we "
+"tag you in them?"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_partner__social_tagging_date
+#: model:ir.model.fields,help:rugby_player_portal_extension.field_res_users__social_tagging_date
+msgid "When the tagging answer was last given or changed."
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "Yes, tag me"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/controllers/portal.py:0
+msgid ""
+"You said we can tag you: please add your social media handle, for example "
+"@jane.doe."
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "Your social media handle"
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#. odoo-python
+#: code:addons/rugby_player_portal_extension/controllers/portal.py:0
+msgid ""
+"Your social media handle can only use letters, numbers, periods and "
+"underscores (30 at most), for example @jane.doe."
+msgstr ""
+
+#. module: rugby_player_portal_extension
+#: model_terms:ir.ui.view,arch_db:rugby_player_portal_extension.portal_my_details_social
+msgid "jane.doe"
+msgstr ""

@@ -54,6 +54,10 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                        <button name="action_open_event_log" type="object" class="oe_stat_button"
+                            icon="format_list_numbered" invisible="not event_count">
+                            <field name="event_count" widget="statinfo" string="Events Logged"/>
+                        </button>
                         <button name="action_open_event" type="object" class="oe_stat_button"
                             icon="confirmation_number" invisible="not event_id" groups="event.group_event_user">
                             <div class="o_stat_info">
@@ -89,7 +93,10 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Lineup &amp; Stats" name="lineup">
+                        <page string="Team Sheet" name="lineup">
+                            <div class="alert alert-info py-2" role="status" invisible="not event_count">
+                                Stats on the team sheet are counted from the Event Log by jersey number. Minutes are still typed by hand.
+                            </div>
                             <field name="lineup_ids" context="{'default_match_id': id}">
                                 <list editable="bottom" default_order="jersey_number"
                                       decoration-muted="not starter">
@@ -99,10 +106,57 @@
                                     <field name="position"/>
                                     <field name="starter" column_invisible="True"/>
                                     <field name="minutes_played" sum="Minutes"/>
-                                    <field name="tackles" sum="Tackles"/>
-                                    <field name="tries" sum="Tries"/>
+                                    <field name="carries" sum="Ball Carries" optional="show"/>
+                                    <field name="carry_meters" sum="Carry Meters" optional="show"/>
+                                    <field name="meters_per_carry" digits="[16, 1]" optional="hide"/>
+                                    <field name="passes" sum="Passes" optional="show"/>
+                                    <field name="offloads" sum="Offloads" optional="hide"/>
+                                    <field name="ruck_arrivals" sum="Ruck Arrivals" optional="show"/>
+                                    <field name="tackles" sum="Tackles" readonly="parent.event_count"/>
+                                    <field name="assist_tackles" sum="Assist Tackles" optional="hide"/>
+                                    <field name="missed_tackles" sum="Missed Tackles" optional="show"/>
+                                    <field name="tackle_rate" widget="percentage" optional="show"/>
+                                    <field name="jackles" sum="Jackles" optional="hide"/>
+                                    <field name="jackle_attempts" sum="Jackle Attempts" optional="hide"/>
+                                    <field name="kicks" sum="Kicks" optional="hide"/>
+                                    <field name="kick_meters" sum="Kick Meters" optional="hide"/>
+                                    <field name="meters_per_kick" digits="[16, 1]" optional="hide"/>
+                                    <field name="knock_ons" sum="Knock-ons" optional="hide"/>
+                                    <field name="forward_passes" sum="Forward Passes" optional="hide"/>
+                                    <field name="penalties_conceded" sum="Penalties Conceded" optional="show"/>
+                                    <field name="yellow_cards" sum="Yellow Cards" optional="hide"/>
+                                    <field name="red_cards" sum="Red Cards" optional="hide"/>
+                                    <field name="tries" sum="Tries" readonly="parent.event_count"/>
+                                    <field name="conversions" sum="Conversions" optional="hide"/>
+                                    <field name="penalty_goals" sum="Penalty Goals" optional="hide"/>
+                                    <field name="drop_goals" sum="Drop Goals" optional="hide"/>
+                                    <field name="points" sum="Points" optional="show"/>
                                 </list>
                             </field>
+                            <button name="action_open_player_stats" type="object" class="btn-link ps-0"
+                                string="Open the full Player Stats table" invisible="not event_count"/>
+                        </page>
+                        <page string="Event Log" name="event_log">
+                            <div class="d-flex gap-2 mb-2">
+                                <button name="%(action_rugby_event_import)d" type="action" class="btn-secondary"
+                                    string="Import from Excel" context="{'default_match_id': id}"/>
+                                <button name="action_open_event_log" type="object" class="btn-secondary"
+                                    string="Open Full Screen" invisible="not event_count"/>
+                            </div>
+                            <div class="alert alert-warning py-2" role="alert" invisible="not unlisted_jerseys">
+                                These jersey numbers are in the log but not on the Team Sheet, so their events aren't counted for any player:
+                                <field name="unlisted_jerseys" class="fw-bold"/>
+                            </div>
+                            <field name="next_event_half" invisible="1"/>
+                            <field name="event_ids" context="{'default_match_id': id, 'default_half': next_event_half}"/>
+                        </page>
+                        <page string="Match Summary" name="summary" invisible="not event_count">
+                            <div class="alert alert-warning py-2" role="alert"
+                                invisible="state != 'played' or not log_score or log_score == score_display">
+                                The event log adds up to <field name="log_score" class="fw-bold"/>, but the result typed on this match is
+                                <field name="score_display" class="fw-bold"/>. Check the scoring events or the result.
+                            </div>
+                            <field name="summary_html" nolabel="1" readonly="1" class="w-100"/>
                         </page>
                         <page string="Match Recording" name="recording">
                             <field name="recording_link"

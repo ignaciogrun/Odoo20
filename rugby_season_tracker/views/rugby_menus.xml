@@ -10,8 +10,16 @@
         parent="menu_rugby_root" action="action_rugby_season"/>
     <menuitem id="menu_rugby_stats" name="Player Stats" sequence="30"
         parent="menu_rugby_root" action="action_rugby_player_stats"/>
+    <menuitem id="menu_rugby_events" name="Event Analysis" sequence="40"
+        parent="menu_rugby_root" action="action_rugby_match_event_analysis"/>
     <menuitem id="menu_rugby_config" name="Configuration" sequence="90"
         parent="menu_rugby_root"/>
     <menuitem id="menu_rugby_teams" name="Teams" sequence="10"
         parent="menu_rugby_config" action="action_rugby_team"/>
+    <menuitem id="menu_rugby_event_types" name="Event Types" sequence="20"
+        parent="menu_rugby_config" action="action_rugby_event_type"/>
+    <menuitem id="menu_rugby_event_categories" name="Event Categories" sequence="30"
+        parent="menu_rugby_config" action="action_rugby_event_category"/>
+    <menuitem id="menu_rugby_event_options" name="Event Detail Lists" sequence="40"
+        parent="menu_rugby_config" action="action_rugby_event_option"/>
 </odoo>
